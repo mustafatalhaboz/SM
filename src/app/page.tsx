@@ -9,7 +9,7 @@ export default function Home() {
           <ul className="list-disc list-inside space-y-2 text-gray-700">
             <li>Task 1.1 - Next.js Projesi Kurulumu ✅ TAMAMLANDI</li>
             <li>Task 1.2 - Firebase Konfigürasyonu ✅ TAMAMLANDI</li>
-            <li>Task 1.3 - Proje Klasör Yapısı (Sonraki)</li>
+            <li>Task 1.3 - Proje Klasör Yapısı ✅ TAMAMLANDI</li>
             <li>Task 2.1 - TypeScript Data Modelleri (Planlanan)</li>
             <li>Task 2.2 - Firebase CRUD Operasyonları (Planlanan)</li>
           </ul>
