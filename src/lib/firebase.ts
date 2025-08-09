@@ -11,6 +11,20 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Debug logging for development
+if (process.env.NODE_ENV === 'development') {
+  console.log('Firebase Config Debug:', {
+    projectId: firebaseConfig.projectId,
+    hasApiKey: !!firebaseConfig.apiKey,
+    hasAuthDomain: !!firebaseConfig.authDomain
+  });
+  
+  if (!firebaseConfig.projectId) {
+    console.error('🔥 Firebase Error: NEXT_PUBLIC_FIREBASE_PROJECT_ID is undefined!');
+    console.error('Check if .env.local file exists and contains proper values');
+  }
+}
+
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export default app;
