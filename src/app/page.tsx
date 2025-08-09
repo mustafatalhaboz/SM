@@ -1,10 +1,13 @@
-import { SummaryDashboard } from '@/components/dashboard';
+import { SummaryDashboard, SampleDataDashboard } from '@/components/dashboard';
 
 export default function Home() {
   return (
     <>
-      {/* Summary Dashboard */}
+      {/* Summary Dashboard - Real data (currently loading/empty) */}
       <SummaryDashboard />
+      
+      {/* Sample Data Dashboard - For development/testing */}
+      <SampleDataDashboard />
 
       {/* Development Progress (temporary) */}
       <div className="bg-white rounded-lg shadow-md p-6">
