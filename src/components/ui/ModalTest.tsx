@@ -106,7 +106,6 @@ function SampleTaskForm() {
 export default function ModalTest() {
   const [isSmallModalOpen, setIsSmallModalOpen] = useState(false);
   const [isMediumModalOpen, setIsMediumModalOpen] = useState(false);
-  const [isLargeModalOpen, setIsLargeModalOpen] = useState(false);
   const [isNoTitleModalOpen, setIsNoTitleModalOpen] = useState(false);
 
   return (
@@ -119,26 +118,19 @@ export default function ModalTest() {
       </div>
 
       {/* Test Buttons */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
           onClick={() => setIsSmallModalOpen(true)}
           className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Small Modal
+          Small Modal (Simple)
         </button>
         
         <button
           onClick={() => setIsMediumModalOpen(true)}
           className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
         >
-          Medium Modal
-        </button>
-        
-        <button
-          onClick={() => setIsLargeModalOpen(true)}
-          className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
-        >
-          Large Modal
+          Medium Modal (Task Form)
         </button>
         
         <button
@@ -194,33 +186,6 @@ export default function ModalTest() {
         <SampleTaskForm />
       </Modal>
 
-      <Modal
-        isOpen={isLargeModalOpen}
-        onClose={() => setIsLargeModalOpen(false)}
-        title="Large Modal - Detaylı Form"
-        size="lg"
-      >
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <SampleTaskForm />
-          </div>
-          <div className="space-y-4">
-            <h4 className="font-medium text-gray-900">Görev Geçmişi</h4>
-            <div className="space-y-2 text-sm">
-              <div className="p-3 bg-gray-50 rounded">
-                <p className="font-medium">Durum değiştirildi</p>
-                <p className="text-gray-600">Yapılacak → Yapılıyor</p>
-                <p className="text-xs text-gray-500">2 saat önce</p>
-              </div>
-              <div className="p-3 bg-gray-50 rounded">
-                <p className="font-medium">Görev oluşturuldu</p>
-                <p className="text-gray-600">Zeynep Kaya tarafından</p>
-                <p className="text-xs text-gray-500">1 gün önce</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
 
       <Modal
         isOpen={isNoTitleModalOpen}

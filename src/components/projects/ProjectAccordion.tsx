@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useProjects, useTasks } from '@/hooks';
 import { Project, Task } from '@/lib/types';
+import CreateProjectModal from './CreateProjectModal';
 
 // Task row component (reused from dashboard)
 function TaskRow({ task }: { task: Task }) {
@@ -165,6 +166,7 @@ function ProjectItem({ project }: { project: Project }) {
 // Main ProjectAccordion component
 export default function ProjectAccordion() {
   const { projects, loading, error } = useProjects();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   
   if (loading) {
     return (
@@ -199,7 +201,10 @@ export default function ProjectAccordion() {
         <p className="text-sm text-gray-500 mb-4">
           İlk projenizi oluşturarak başlayın.
         </p>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <button 
+          onClick={() => setIsCreateModalOpen(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
           + Yeni Proje Oluştur
         </button>
       </div>
@@ -224,6 +229,22 @@ export default function ProjectAccordion() {
           <ProjectItem key={project.id} project={project} />
         ))}
       </div>
+
+      {/* Add Project Button for existing projects */}
+      <div className="text-center">
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+        >
+          + Yeni Proje Ekle
+        </button>
+      </div>
+
+      {/* Create Project Modal */}
+      <CreateProjectModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
   );
 }
