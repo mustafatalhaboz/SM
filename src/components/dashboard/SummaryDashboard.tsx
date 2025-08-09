@@ -35,35 +35,36 @@ function StatusBadge({ status }: { status: Task['status'] }) {
   );
 }
 
-// Task card component
-function TaskCard({ task }: { task: Task }) {
+// Task row component (horizontal layout)
+function TaskRow({ task }: { task: Task }) {
   const isOverdue = task.deadline < new Date();
   
   return (
-    <div className="bg-white border rounded-lg p-4 hover:shadow-sm transition-shadow">
-      <div className="flex items-start justify-between mb-2">
-        <h4 className="font-medium text-gray-900 text-sm line-clamp-2 flex-1 mr-2">
-          {task.title}
-        </h4>
-        <PriorityBadge priority={task.priority} />
-      </div>
-      
-      <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-        <StatusBadge status={task.status} />
-        <span className="capitalize">{task.type}</span>
-      </div>
-      
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-gray-400">
-          {task.assignedPerson || 'Atanmamış'}
-        </span>
-        <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'}`}>
-          {task.deadline.toLocaleDateString('tr-TR', { 
-            day: 'numeric', 
-            month: 'short' 
-          })}
-          {isOverdue && ' ⚠️'}
-        </span>
+    <div className="bg-white border rounded-lg p-3 hover:shadow-sm transition-shadow">
+      <div className="flex items-center justify-between">
+        {/* Left side - Title and badges */}
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
+          <h4 className="font-medium text-gray-900 text-sm truncate flex-1">
+            {task.title}
+          </h4>
+          <PriorityBadge priority={task.priority} />
+          <StatusBadge status={task.status} />
+        </div>
+        
+        {/* Right side - Type, person, deadline */}
+        <div className="flex items-center space-x-4 text-xs text-gray-500 ml-4">
+          <span className="capitalize min-w-0">{task.type}</span>
+          <span className="text-gray-400 min-w-0">
+            {task.assignedPerson || 'Atanmamış'}
+          </span>
+          <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
+            {task.deadline.toLocaleDateString('tr-TR', { 
+              day: 'numeric', 
+              month: 'short' 
+            })}
+            {isOverdue && ' ⚠️'}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -135,10 +136,10 @@ export default function SummaryDashboard() {
         </span>
       </div>
 
-      {/* Tasks Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      {/* Tasks List */}
+      <div className="space-y-2">
         {displayTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskRow key={task.id} task={task} />
         ))}
       </div>
 
