@@ -75,7 +75,7 @@ interface Task {
 2. **✅ Firebase SDK kurulumu**
    - `npm install firebase` ile Firebase v12.1.0 eklendi 
    - package.json'da dependency doğrulandı
-   - Firebase konfigürasyonu bir sonraki taskta yapılacak
+   - Firebase konfigürasyonu Task 1.2'de tamamlandı
 
 3. **✅ Vercel deployment setup**
    - SSH key oluşturuldu ve GitHub'a eklendi
@@ -83,17 +83,23 @@ interface Task {
    - Vercel'e deploy edildi (sm-chi-two.vercel.app)
    - 404 hatası için vercel.json ve next.config.ts düzeltmeleri yapıldı
 
+4. **✅ Firebase Konfigürasyonu** 
+   - Firebase projesi "sm07" oluşturuldu ve Firestore etkinleştirildi
+   - `src/lib/firebase.ts` dosyası oluşturuldu ve Firestore bağlantısı yapıldı
+   - `.env.local` environment variables güvenli şekilde yapılandırıldı
+   - Firebase bağlantı testi başarıyla tamamlandı
+
 ### Faz 2: Data Modelleri & Firebase Integration (45 dk)
-4. **Proje ve Task data modellerini oluştur**
+5. **Proje ve Task data modellerini oluştur**
    - TypeScript interfaces tanımla
    - Validation helpers oluştur
 
-5. **Firebase Firestore CRUD operasyonları**
+6. **Firebase Firestore CRUD operasyonları**
    - Project CRUD functions (create, read, update, delete)
    - Task CRUD functions
    - Query helpers (by project, by priority)
 
-6. **Real-time listeners implementasyonu**
+7. **Real-time listeners implementasyonu**
    - useEffect hooks ile real-time data listening
    - State management for projects and tasks
 
