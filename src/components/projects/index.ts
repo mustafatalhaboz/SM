@@ -1,5 +1,3 @@
 // Project components exports
-// ProjectAccordion, CreateProjectForm, TaskForm components will be exported from here
-
-// Placeholder export to make this file a valid module
-export {};
+export { default as ProjectAccordion } from './ProjectAccordion';
+export { default as SampleProjectAccordion } from './SampleProjectAccordion';

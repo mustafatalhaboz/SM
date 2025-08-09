@@ -1,4 +1,5 @@
 import { SummaryDashboard, SampleDataDashboard } from '@/components/dashboard';
+import { ProjectAccordion, SampleProjectAccordion } from '@/components/projects';
 
 export default function Home() {
   return (
@@ -8,6 +9,12 @@ export default function Home() {
       
       {/* Sample Data Dashboard - For development/testing */}
       <SampleDataDashboard />
+      
+      {/* Project Accordion - Real data */}
+      <ProjectAccordion />
+      
+      {/* Sample Project Accordion - For development/testing */}
+      <SampleProjectAccordion />
 
       {/* Development Progress (temporary) */}
       <div className="bg-white rounded-lg shadow-md p-6">
