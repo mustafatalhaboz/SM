@@ -10,8 +10,8 @@ export default function Home() {
             <li>Task 1.1 - Next.js Projesi Kurulumu ✅ TAMAMLANDI</li>
             <li>Task 1.2 - Firebase Konfigürasyonu ✅ TAMAMLANDI</li>
             <li>Task 1.3 - Proje Klasör Yapısı ✅ TAMAMLANDI</li>
-            <li>Task 2.1 - TypeScript Data Modelleri (Planlanan)</li>
-            <li>Task 2.2 - Firebase CRUD Operasyonları (Planlanan)</li>
+            <li>Task 2.1 - TypeScript Data Modelleri ✅ TAMAMLANDI</li>
+            <li>Task 2.2 - Firebase CRUD Operasyonları ✅ TAMAMLANDI</li>
           </ul>
         </div>
       </div>
