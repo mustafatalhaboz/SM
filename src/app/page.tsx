@@ -1,5 +1,6 @@
 import { SummaryDashboard, SampleDataDashboard } from '@/components/dashboard';
 import { ProjectAccordion, SampleProjectAccordion } from '@/components/projects';
+import { ModalTest } from '@/components/ui';
 
 export default function Home() {
   return (
@@ -15,6 +16,9 @@ export default function Home() {
       
       {/* Sample Project Accordion - For development/testing */}
       <SampleProjectAccordion />
+      
+      {/* Modal Test Component */}
+      <ModalTest />
 
       {/* Development Progress (temporary) */}
       <div className="bg-white rounded-lg shadow-md p-6">
