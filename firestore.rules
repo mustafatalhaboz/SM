@@ -1,0 +1,113 @@
+// Firestore Security Rules for SuperM Task Management
+// Production-ready rules with basic data validation
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Projects collection rules
+    match /projects/{projectId} {
+      // Allow read access to all projects (for the current single-user MVP)
+      allow read: if true;
+      
+      // Allow create with name validation
+      allow create: if request.auth != null || (
+        resource == null &&
+        request.resource.data.keys().hasAll(['name', 'createdAt']) &&
+        request.resource.data.size() == 2 &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() <= 100 &&
+        request.resource.data.createdAt is timestamp
+      );
+      
+      // Allow update with name validation
+      allow update: if request.auth != null || (
+        request.resource.data.keys().hasAll(['name', 'createdAt']) &&
+        request.resource.data.size() == 2 &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() <= 100 &&
+        request.resource.data.createdAt == resource.data.createdAt
+      );
+      
+      // Allow delete
+      allow delete: if request.auth != null || true;
+    }
+    
+    // Tasks collection rules  
+    match /tasks/{taskId} {
+      // Allow read access to all tasks (for the current single-user MVP)
+      allow read: if true;
+      
+      // Allow create with field validation
+      allow create: if request.auth != null || (
+        resource == null &&
+        request.resource.data.keys().hasAll([
+          'projectId', 'title', 'description', 'assignedPerson',
+          'status', 'type', 'priority', 'deadline', 'createdAt'
+        ]) &&
+        request.resource.data.size() == 9 &&
+        
+        // Field type and size validations
+        request.resource.data.projectId is string &&
+        request.resource.data.projectId.size() > 0 &&
+        
+        request.resource.data.title is string &&
+        request.resource.data.title.size() > 0 &&
+        request.resource.data.title.size() <= 200 &&
+        
+        request.resource.data.description is string &&
+        request.resource.data.description.size() <= 1000 &&
+        
+        request.resource.data.assignedPerson is string &&
+        request.resource.data.assignedPerson.size() <= 100 &&
+        
+        request.resource.data.status in ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'] &&
+        request.resource.data.type in ['Operasyon', 'Yönlendirme', 'Takip'] &&
+        request.resource.data.priority in ['Yüksek', 'Orta', 'Düşük'] &&
+        
+        request.resource.data.deadline is timestamp &&
+        request.resource.data.createdAt is timestamp
+      );
+      
+      // Allow update with field validation
+      allow update: if request.auth != null || (
+        request.resource.data.keys().hasAll([
+          'projectId', 'title', 'description', 'assignedPerson',
+          'status', 'type', 'priority', 'deadline', 'createdAt'
+        ]) &&
+        request.resource.data.size() == 9 &&
+        
+        // Field validations
+        request.resource.data.projectId == resource.data.projectId &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        
+        request.resource.data.title is string &&
+        request.resource.data.title.size() > 0 &&
+        request.resource.data.title.size() <= 200 &&
+        
+        request.resource.data.description is string &&
+        request.resource.data.description.size() <= 1000 &&
+        
+        request.resource.data.assignedPerson is string &&
+        request.resource.data.assignedPerson.size() <= 100 &&
+        
+        request.resource.data.status in ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'] &&
+        request.resource.data.type in ['Operasyon', 'Yönlendirme', 'Takip'] &&
+        request.resource.data.priority in ['Yüksek', 'Orta', 'Düşük'] &&
+        
+        request.resource.data.deadline is timestamp
+      );
+      
+      // Allow delete
+      allow delete: if request.auth != null || true;
+    }
+    
+    // Block all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -21,6 +21,7 @@ import {
   UpdateTaskData,
   TaskPriority
 } from './types';
+import { logger } from './logger';
 
 // Helper function to convert Firestore document to Project
 function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
@@ -63,10 +64,10 @@ export async function createProject(data: CreateProjectData): Promise<string> {
       name: data.name,
       createdAt: Timestamp.now()
     });
-    console.log('Project created with ID:', docRef.id);
+    logger.firebaseOperation('createProject', true, { projectId: docRef.id, name: data.name });
     return docRef.id;
   } catch (error) {
-    console.error('Error creating project:', error);
+    logger.firebaseOperation('createProject', false, error);
     throw new Error('Failed to create project');
   }
 }
@@ -86,10 +87,10 @@ export async function getProjects(): Promise<Project[]> {
       projects.push(docToProject(doc));
     });
     
-    console.log('Retrieved projects:', projects.length);
+    logger.firebaseOperation('getProjects', true, { count: projects.length });
     return projects;
   } catch (error) {
-    console.error('Error getting projects:', error);
+    logger.firebaseOperation('getProjects', false, error);
     throw new Error('Failed to get projects');
   }
 }
@@ -117,9 +118,9 @@ export async function deleteProject(projectId: string): Promise<void> {
     const projectRef = doc(db, 'projects', projectId);
     await deleteDoc(projectRef);
     
-    console.log('Project and associated tasks deleted:', projectId);
+    logger.firebaseOperation('deleteProject', true, { projectId, tasksDeleted: deletePromises.length });
   } catch (error) {
-    console.error('Error deleting project:', error);
+    logger.firebaseOperation('deleteProject', false, error);
     throw new Error('Failed to delete project');
   }
 }
@@ -147,10 +148,10 @@ export async function createTask(data: CreateTaskData): Promise<string> {
     };
     
     const docRef = await addDoc(tasksRef, taskData);
-    console.log('Task created with ID:', docRef.id);
+    logger.firebaseOperation('createTask', true, { taskId: docRef.id, projectId: data.projectId });
     return docRef.id;
   } catch (error) {
-    console.error('Error creating task:', error);
+    logger.firebaseOperation('createTask', false, error);
     throw new Error('Failed to create task');
   }
 }
@@ -171,9 +172,9 @@ export async function updateTask(taskId: string, data: UpdateTaskData): Promise<
     }
     
     await updateDoc(taskRef, updateData);
-    console.log('Task updated:', taskId);
+    logger.firebaseOperation('updateTask', true, { taskId });
   } catch (error) {
-    console.error('Error updating task:', error);
+    logger.firebaseOperation('updateTask', false, error);
     throw new Error('Failed to update task');
   }
 }
@@ -186,9 +187,9 @@ export async function deleteTask(taskId: string): Promise<void> {
   try {
     const taskRef = doc(db, 'tasks', taskId);
     await deleteDoc(taskRef);
-    console.log('Task deleted:', taskId);
+    logger.firebaseOperation('deleteTask', true, { taskId });
   } catch (error) {
-    console.error('Error deleting task:', error);
+    logger.firebaseOperation('deleteTask', false, error);
     throw new Error('Failed to delete task');
   }
 }
@@ -213,10 +214,10 @@ export async function getTasksByProject(projectId: string): Promise<Task[]> {
       tasks.push(docToTask(doc));
     });
     
-    console.log('Retrieved tasks for project:', projectId, tasks.length);
+    logger.firebaseOperation('getTasksByProject', true, { projectId, count: tasks.length });
     return tasks;
   } catch (error) {
-    console.error('Error getting tasks by project:', error);
+    logger.firebaseOperation('getTasksByProject', false, error);
     throw new Error('Failed to get tasks');
   }
 }
@@ -261,10 +262,10 @@ export async function getHighPriorityTasks(): Promise<Task[]> {
       return a.deadline.getTime() - b.deadline.getTime();
     });
     
-    console.log('Retrieved high priority tasks:', tasks.length);
+    logger.firebaseOperation('getHighPriorityTasks', true, { count: tasks.length });
     return tasks;
   } catch (error) {
-    console.error('Error getting high priority tasks:', error);
+    logger.firebaseOperation('getHighPriorityTasks', false, error);
     throw new Error('Failed to get high priority tasks');
   }
 }

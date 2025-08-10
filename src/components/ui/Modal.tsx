@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { logger } from '@/lib/logger';
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,8 +16,8 @@ export default function Modal({ isOpen, onClose, children, title, size = 'md' }:
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  // Debug logging
-  console.log('Modal render:', { isOpen, title, size });
+  // Development logging
+  logger.componentRender('Modal', { isOpen, title, size });
 
   // Size classes for different modal sizes
   const sizeClasses = {
@@ -114,11 +115,8 @@ export default function Modal({ isOpen, onClose, children, title, size = 'md' }:
 
   // Don't render anything if modal is not open
   if (!isOpen) {
-    console.log('Modal not rendering because isOpen is false');
     return null;
   }
-  
-  console.log('Modal IS OPEN - rendering portal');
 
   // Portal the modal to document.body
   return createPortal(

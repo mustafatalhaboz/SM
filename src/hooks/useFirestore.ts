@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Project, Task, TaskPriority, TaskWithProject } from '../lib/types';
+import { logger } from '../lib/logger';
 
 // Helper function to convert Firestore document to Project
 function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
@@ -97,16 +98,16 @@ export function useProjects(): UseProjectsReturn {
           setProjects(projectsList);
           setLoading(false);
           setError(null);
-          console.log('Projects updated via real-time listener:', projectsList.length);
+          logger.debug('Projects real-time update', { count: projectsList.length });
         },
         (error) => {
-          console.error('Error in projects listener:', error);
+          logger.error('Projects listener failed', { error });
           setError('Failed to load projects');
           setLoading(false);
         }
       );
     } catch (error) {
-      console.error('Error setting up projects listener:', error);
+      logger.error('Projects listener setup failed', { error });
       setError('Failed to setup projects listener');
       setLoading(false);
     }
@@ -115,7 +116,7 @@ export function useProjects(): UseProjectsReturn {
     return () => {
       if (unsubscribe) {
         unsubscribe();
-        console.log('Projects listener cleaned up');
+        logger.componentCleanup('useProjects');
       }
     };
   }, [mounted]);
@@ -166,16 +167,16 @@ export function useTasks(projectId: string): UseTasksReturn {
           setTasks(tasksList);
           setLoading(false);
           setError(null);
-          console.log('Tasks updated via real-time listener for project:', projectId, tasksList.length);
+          logger.debug('Tasks real-time update', { projectId, count: tasksList.length });
         },
         (error) => {
-          console.error('Error in tasks listener:', error);
+          logger.error('Tasks listener failed', { projectId, error });
           setError('Failed to load tasks');
           setLoading(false);
         }
       );
     } catch (error) {
-      console.error('Error setting up tasks listener:', error);
+      logger.error('Tasks listener setup failed', { projectId, error });
       setError('Failed to setup tasks listener');
       setLoading(false);
     }
@@ -184,7 +185,7 @@ export function useTasks(projectId: string): UseTasksReturn {
     return () => {
       if (unsubscribe) {
         unsubscribe();
-        console.log('Tasks listener cleaned up for project:', projectId);
+        logger.componentCleanup('useTasks');
       }
     };
   }, [mounted, projectId]);
@@ -249,16 +250,16 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
           setTasks(filteredTasks);
           setLoading(false);
           setError(null);
-          console.log('High priority tasks updated via real-time listener:', filteredTasks.length);
+          logger.debug('High priority tasks real-time update', { count: filteredTasks.length });
         },
         (error) => {
-          console.error('Error in high priority tasks listener:', error);
+          logger.error('High priority tasks listener failed', { error });
           setError('Failed to load high priority tasks');
           setLoading(false);
         }
       );
     } catch (error) {
-      console.error('Error setting up high priority tasks listener:', error);
+      logger.error('High priority tasks listener setup failed', { error });
       setError('Failed to setup high priority tasks listener');
       setLoading(false);
     }
@@ -267,7 +268,7 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
     return () => {
       if (unsubscribe) {
         unsubscribe();
-        console.log('High priority tasks listener cleaned up');
+        logger.componentCleanup('useHighPriorityTasks');
       }
     };
   }, [mounted]);
@@ -360,23 +361,23 @@ export function useHighPriorityTasksWithProjects(): UseHighPriorityTasksWithProj
               setTasks(tasksList);
               setLoading(false);
               setError(null);
-              console.log('High priority tasks with projects updated:', tasksList.length);
+              logger.debug('High priority tasks with projects update', { count: tasksList.length });
             },
             (tasksError) => {
-              console.error('Error in high priority tasks with projects listener:', tasksError);
+              logger.error('High priority tasks with projects (tasks) listener failed', { error: tasksError });
               setError('Failed to load high priority tasks');
               setLoading(false);
             }
           );
         },
         (projectsError) => {
-          console.error('Error in projects listener for dashboard:', projectsError);
+          logger.error('High priority tasks with projects (projects) listener failed', { error: projectsError });
           setError('Failed to load projects for tasks');
           setLoading(false);
         }
       );
     } catch (error) {
-      console.error('Error setting up high priority tasks with projects listener:', error);
+      logger.error('High priority tasks with projects listener setup failed', { error });
       setError('Failed to setup high priority tasks listener');
       setLoading(false);
     }
@@ -385,12 +386,11 @@ export function useHighPriorityTasksWithProjects(): UseHighPriorityTasksWithProj
     return () => {
       if (tasksUnsubscribe) {
         tasksUnsubscribe();
-        console.log('High priority tasks with projects (tasks) listener cleaned up');
       }
       if (projectsUnsubscribe) {
         projectsUnsubscribe();
-        console.log('High priority tasks with projects (projects) listener cleaned up');
       }
+      logger.componentCleanup('useHighPriorityTasksWithProjects');
     };
   }, [mounted]);
 

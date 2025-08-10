@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { createProject } from '@/lib/firebase-operations';
 import { TASK_MESSAGES } from '@/constants/taskConstants';
+import { logger } from '@/lib/logger';
 
 interface UseProjectOperationsReturn {
   isLoading: boolean;
@@ -23,7 +24,7 @@ export function useProjectOperations(): UseProjectOperationsReturn {
       await createProject({ name: projectName.trim() });
       alert(TASK_MESSAGES.PROJECT_CREATED_SUCCESS(projectName));
     } catch (error) {
-      console.error('Project creation error:', error);
+      logger.error('Project creation failed in hook', { operation: 'useProjectOperations', error });
       const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata';
       alert(TASK_MESSAGES.PROJECT_CREATION_ERROR(errorMessage));
     } finally {

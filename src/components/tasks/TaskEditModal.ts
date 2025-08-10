@@ -1,5 +1,6 @@
 import { Task, UpdateTaskData, TaskStatus, TaskType, TaskPriority, TASK_STATUS_OPTIONS, TASK_TYPE_OPTIONS, TASK_PRIORITY_OPTIONS } from '@/lib/types';
 import { updateTask } from '@/lib/firebase-operations';
+import { logger } from '@/lib/logger';
 
 interface TaskEditModalOptions {
   task: Task;
@@ -22,12 +23,12 @@ const escapeHtml = (text: string): string => {
 const formatDateForInput = (date: Date): string => {
   try {
     if (!date || isNaN(date.getTime())) {
-      return new Date().toISOString().split('T')[0];
+      return new Date().toISOString().split('T')[0]!;
     }
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split('T')[0]!;
   } catch (error) {
-    console.error('Date formatting error:', error);
-    return new Date().toISOString().split('T')[0];
+    logger.error('Date formatting error in TaskEditModal', { error });
+    return new Date().toISOString().split('T')[0]!;
   }
 };
 
@@ -268,7 +269,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
       
       if (selectedDate < today) {
         // Could add date error display here if needed
-        console.warn('Selected date is in the past');
+        logger.warn('Selected date is in the past', { selectedDate });
       }
     }
 
@@ -340,7 +341,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
       alert('Görev başarıyla güncellendi');
 
     } catch (error) {
-      console.error('Task update error:', error);
+      logger.error('Task update error in modal', { taskId: task.id, error });
       const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata';
       onError?.(errorMessage);
       alert(`Görev güncellenirken hata oluştu: ${errorMessage}`);

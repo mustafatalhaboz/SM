@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "./scripts/production-deploy.sh",
+    "check-env": "node scripts/check-env.js",
+    "build:analyze": "ANALYZE=true npm run build",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "firebase": "^12.1.0",

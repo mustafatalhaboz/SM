@@ -3,6 +3,7 @@
 import { useHighPriorityTasksWithProjects } from '@/hooks';
 import { TaskWithProject } from '@/lib/types';
 import { updateTask } from '@/lib/firebase-operations';
+import { logger } from '@/lib/logger';
 
 // Priority badge component
 function PriorityBadge({ priority }: { priority: TaskWithProject['priority'] }) {
@@ -141,9 +142,9 @@ export default function SummaryDashboard() {
   const handleCompleteTask = async (taskId: string) => {
     try {
       await updateTask(taskId, { status: 'Yapıldı' });
-      console.log('Task marked as completed:', taskId);
+      logger.debug('Task marked as completed from dashboard', { taskId });
     } catch (error) {
-      console.error('Error completing task:', error);
+      logger.error('Failed to complete task from dashboard', { taskId, error });
     }
   };
 

@@ -53,10 +53,7 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
     }
   };
 
-  // Simple test if modal should be visible
-  if (isOpen) {
-    console.log('CreateProjectModal should be visible now!');
-  }
+  // Simple test removed - handled by component render logging
 
   return (
     <Modal
