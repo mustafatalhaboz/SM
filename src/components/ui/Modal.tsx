@@ -15,6 +15,9 @@ export default function Modal({ isOpen, onClose, children, title, size = 'md' }:
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
+  // Debug logging
+  console.log('Modal render:', { isOpen, title, size });
+
   // Size classes for different modal sizes
   const sizeClasses = {
     sm: 'max-w-md',
@@ -110,13 +113,19 @@ export default function Modal({ isOpen, onClose, children, title, size = 'md' }:
   };
 
   // Don't render anything if modal is not open
-  if (!isOpen) return null;
+  if (!isOpen) {
+    console.log('Modal not rendering because isOpen is false');
+    return null;
+  }
+  
+  console.log('Modal IS OPEN - rendering portal');
 
   // Portal the modal to document.body
   return createPortal(
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-red-500"
       onClick={handleOverlayClick}
+      style={{ zIndex: 9999 }}
     >
       {/* Overlay */}
       <div 

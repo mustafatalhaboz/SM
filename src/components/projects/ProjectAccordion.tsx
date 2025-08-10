@@ -1,67 +1,106 @@
 'use client';
 
-import { useState } from 'react';
-import { useProjects, useTasks } from '@/hooks';
-import { Project, Task } from '@/lib/types';
+import { useState, useEffect } from 'react';
+import { useProjects, useTasks, useTaskOperations, useProjectOperations } from '@/hooks';
+import { createProject } from '@/lib/firebase-operations';
+import { Project } from '@/lib/types';
+import { TaskRow } from '@/components/tasks';
 import CreateProjectModal from './CreateProjectModal';
 
-// Task row component (reused from dashboard)
-function TaskRow({ task }: { task: Task }) {
-  const isOverdue = task.deadline < new Date();
-  
-  const statusColors = {
-    'Yapılacak': 'bg-gray-100 text-gray-800',
-    'Yapılıyor': 'bg-blue-100 text-blue-800',
-    'Beklemede': 'bg-orange-100 text-orange-800',
-    'Blocked': 'bg-red-100 text-red-800',
-    'Yapıldı': 'bg-green-100 text-green-800'
+// Simple inline project creation form
+function CreateProjectForm({ onClose }: { onClose: () => void }) {
+  const [projectName, setProjectName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!projectName.trim()) {
+      setError('Proje ismi gereklidir');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await createProject({ name: projectName.trim() });
+      console.log('Project created successfully:', projectName);
+      onClose();
+    } catch (error) {
+      console.error('Error creating project:', error);
+      setError('Proje oluşturulurken hata oluştu');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const priorityColors = {
-    'Yüksek': 'bg-red-100 text-red-800 border-red-200',
-    'Orta': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    'Düşük': 'bg-green-100 text-green-800 border-green-200'
-  };
-  
   return (
-    <div className="bg-gray-50 border rounded-lg p-3 hover:bg-white transition-colors">
-      <div className="flex items-center justify-between">
-        {/* Left side - Title and badges */}
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          <h5 className="font-medium text-gray-900 text-sm truncate flex-1">
-            {task.title}
-          </h5>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full border ${priorityColors[task.priority]}`}>
-            {task.priority}
-          </span>
-          <span className={`px-2 py-1 text-xs font-medium rounded ${statusColors[task.status]}`}>
-            {task.status}
-          </span>
-        </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+      <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+        <h2 className="text-lg font-semibold mb-4">Yeni Proje Oluştur</h2>
         
-        {/* Right side - Type, person, deadline */}
-        <div className="flex items-center space-x-4 text-xs text-gray-500 ml-4">
-          <span className="capitalize min-w-0">{task.type}</span>
-          <span className="text-gray-400 min-w-0">
-            {task.assignedPerson || 'Atanmamış'}
-          </span>
-          <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
-            {task.deadline.toLocaleDateString('tr-TR', { 
-              day: 'numeric', 
-              month: 'short' 
-            })}
-            {isOverdue && ' ⚠️'}
-          </span>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="project-name" className="block text-sm font-medium text-gray-700 mb-1">
+              Proje İsmi
+            </label>
+            <input
+              id="project-name"
+              type="text"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              placeholder="Örn: E-Ticaret Platformu, Mobil Uygulama..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={isLoading}
+              autoFocus
+            />
+            {error && (
+              <p className="mt-1 text-sm text-red-600">{error}</p>
+            )}
+          </div>
+
+          <div className="text-sm text-gray-500">
+            <p>💡 İpucu: Proje oluşturduktan sonra görevler ekleyebilirsiniz.</p>
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4 border-t">
+            <button 
+              type="button"
+              onClick={onClose}
+              disabled={isLoading}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            >
+              İptal
+            </button>
+            <button 
+              type="submit"
+              disabled={isLoading || !projectName.trim()}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center"
+            >
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Oluşturuluyor...
+                </>
+              ) : (
+                'Proje Oluştur'
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
 }
 
+
 // Individual project accordion item
 function ProjectItem({ project }: { project: Project }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { tasks, loading: tasksLoading, error: tasksError } = useTasks(project.id);
+  const { handleCreateTask, handleDeleteTask, handleTaskClick } = useTaskOperations({ projectId: project.id });
   
   // Calculate completion stats
   const completedTasks = tasks.filter(task => task.status === 'Yapıldı').length;
@@ -125,8 +164,7 @@ function ProjectItem({ project }: { project: Project }) {
                 className="w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // TODO: Implement add task functionality
-                  console.log('Add task for project:', project.id);
+                  handleCreateTask();
                 }}
               >
                 + Yeni Görev Ekle
@@ -152,7 +190,12 @@ function ProjectItem({ project }: { project: Project }) {
                 </div>
               ) : (
                 tasks.map((task) => (
-                  <TaskRow key={task.id} task={task} />
+                  <TaskRow 
+                    key={task.id} 
+                    task={task} 
+                    onTaskClick={handleTaskClick}
+                    onDeleteTask={handleDeleteTask}
+                  />
                 ))
               )}
             </div>
@@ -166,7 +209,26 @@ function ProjectItem({ project }: { project: Project }) {
 // Main ProjectAccordion component
 export default function ProjectAccordion() {
   const { projects, loading, error } = useProjects();
+  const { handleCreateProject } = useProjectOperations();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Fix hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="bg-white rounded-lg border p-6">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Yükleniyor...</span>
+        </div>
+      </div>
+    );
+  }
+  
   
   if (loading) {
     return (
@@ -202,7 +264,7 @@ export default function ProjectAccordion() {
           İlk projenizi oluşturarak başlayın.
         </p>
         <button 
-          onClick={() => setIsCreateModalOpen(true)}
+          onClick={handleCreateProject}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           + Yeni Proje Oluştur
@@ -233,18 +295,13 @@ export default function ProjectAccordion() {
       {/* Add Project Button for existing projects */}
       <div className="text-center">
         <button
-          onClick={() => setIsCreateModalOpen(true)}
+          onClick={handleCreateProject}
           className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
         >
           + Yeni Proje Ekle
         </button>
       </div>
 
-      {/* Create Project Modal */}
-      <CreateProjectModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
     </div>
   );
 }

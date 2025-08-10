@@ -14,6 +14,9 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Debug logging
+  console.log('CreateProjectModal render:', { isOpen, projectName, isLoading, error });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -49,6 +52,11 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
       onClose();
     }
   };
+
+  // Simple test if modal should be visible
+  if (isOpen) {
+    console.log('CreateProjectModal should be visible now!');
+  }
 
   return (
     <Modal

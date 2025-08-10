@@ -131,8 +131,7 @@ export function useTasks(projectId: string): UseTasksReturn {
       const tasksRef = collection(db, 'tasks');
       const q = query(
         tasksRef,
-        where('projectId', '==', projectId),
-        orderBy('createdAt', 'desc')
+        where('projectId', '==', projectId)
       );
 
       unsubscribe = onSnapshot(q,
@@ -188,8 +187,7 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
       const tasksRef = collection(db, 'tasks');
       const q = query(
         tasksRef,
-        where('priority', 'in', ['Yüksek', 'Orta']),
-        where('status', '!=', 'Yapıldı')
+        where('priority', 'in', ['Yüksek', 'Orta'])
       );
 
       unsubscribe = onSnapshot(q,
@@ -199,8 +197,11 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
             tasksList.push(docToTask(doc));
           });
 
+          // Filter out completed tasks and sort
+          const filteredTasks = tasksList.filter(task => task.status !== 'Yapıldı');
+          
           // Custom sorting: Yüksek priority first, then by deadline
-          tasksList.sort((a, b) => {
+          filteredTasks.sort((a, b) => {
             const priorityOrder: Record<TaskPriority, number> = {
               'Yüksek': 3,
               'Orta': 2,
@@ -215,10 +216,10 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
             return a.deadline.getTime() - b.deadline.getTime();
           });
 
-          setTasks(tasksList);
+          setTasks(filteredTasks);
           setLoading(false);
           setError(null);
-          console.log('High priority tasks updated via real-time listener:', tasksList.length);
+          console.log('High priority tasks updated via real-time listener:', filteredTasks.length);
         },
         (error) => {
           console.error('Error in high priority tasks listener:', error);
