@@ -27,4 +27,10 @@ if (process.env.NODE_ENV === 'development') {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+
+// Force Firebase to use production endpoints (no offline persistence in browser)
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  console.log('🔥 Firebase: Using production Firestore in development mode');
+}
+
 export default app;

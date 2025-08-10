@@ -10,7 +10,7 @@ import {
   Unsubscribe 
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { Project, Task, TaskPriority } from '../lib/types';
+import { Project, Task, TaskPriority, TaskWithProject } from '../lib/types';
 
 // Helper function to convert Firestore document to Project
 function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
@@ -58,6 +58,12 @@ interface UseHighPriorityTasksReturn {
   error: string | null;
 }
 
+interface UseHighPriorityTasksWithProjectsReturn {
+  tasks: TaskWithProject[];
+  loading: boolean;
+  error: string | null;
+}
+
 /**
  * Real-time hook to listen to all projects, ordered by creation date (newest first)
  */
@@ -65,8 +71,16 @@ export function useProjects(): UseProjectsReturn {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  // Fix hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     let unsubscribe: Unsubscribe;
 
     try {
@@ -104,7 +118,7 @@ export function useProjects(): UseProjectsReturn {
         console.log('Projects listener cleaned up');
       }
     };
-  }, []);
+  }, [mounted]);
 
   return { projects, loading, error };
 }
@@ -117,11 +131,19 @@ export function useTasks(projectId: string): UseTasksReturn {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  // Fix hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (!projectId) {
-      setTasks([]);
-      setLoading(false);
+    if (!mounted || !projectId) {
+      if (!projectId) {
+        setTasks([]);
+        setLoading(false);
+      }
       return;
     }
 
@@ -165,7 +187,7 @@ export function useTasks(projectId: string): UseTasksReturn {
         console.log('Tasks listener cleaned up for project:', projectId);
       }
     };
-  }, [projectId]);
+  }, [mounted, projectId]);
 
   return { tasks, loading, error };
 }
@@ -179,8 +201,16 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  // Fix hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     let unsubscribe: Unsubscribe;
 
     try {
@@ -240,7 +270,129 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
         console.log('High priority tasks listener cleaned up');
       }
     };
+  }, [mounted]);
+
+  return { tasks, loading, error };
+}
+
+/**
+ * Enhanced hook to get high priority tasks with project names
+ * Combines tasks with their associated project information for dashboard display
+ */
+export function useHighPriorityTasksWithProjects(): UseHighPriorityTasksWithProjectsReturn {
+  const [tasks, setTasks] = useState<TaskWithProject[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  // Fix hydration mismatch
+  useEffect(() => {
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
+    let tasksUnsubscribe: Unsubscribe;
+    let projectsUnsubscribe: Unsubscribe;
+
+    try {
+      // Create a map to store project names
+      const projectsMap = new Map<string, string>();
+
+      // Listen to projects first
+      const projectsRef = collection(db, 'projects');
+      const projectsQuery = query(projectsRef, orderBy('createdAt', 'desc'));
+
+      projectsUnsubscribe = onSnapshot(projectsQuery, 
+        (projectsSnapshot) => {
+          // Update projects map
+          projectsMap.clear();
+          projectsSnapshot.forEach((doc) => {
+            const project = docToProject(doc);
+            projectsMap.set(project.id, project.name);
+          });
+
+          // Now listen to tasks
+          const tasksRef = collection(db, 'tasks');
+          const tasksQuery = query(
+            tasksRef,
+            where('priority', 'in', ['Yüksek', 'Orta'])
+          );
+
+          // Clean up existing tasks subscription if it exists
+          if (tasksUnsubscribe) {
+            tasksUnsubscribe();
+          }
+
+          tasksUnsubscribe = onSnapshot(tasksQuery,
+            (tasksSnapshot) => {
+              const tasksList: TaskWithProject[] = [];
+              tasksSnapshot.forEach((doc) => {
+                const task = docToTask(doc);
+                const projectName = projectsMap.get(task.projectId) || 'Bilinmeyen Proje';
+                
+                // Only include tasks that are not completed
+                if (task.status !== 'Yapıldı') {
+                  tasksList.push({
+                    ...task,
+                    projectName
+                  });
+                }
+              });
+              
+              // Custom sorting: Priority first, then deadline
+              const priorityOrder: Record<TaskPriority, number> = {
+                'Yüksek': 3,
+                'Orta': 2,
+                'Düşük': 1
+              };
+              
+              tasksList.sort((a, b) => {
+                // First sort by priority (highest first)
+                const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
+                if (priorityDiff !== 0) return priorityDiff;
+                
+                // Then sort by deadline (earliest first)
+                return a.deadline.getTime() - b.deadline.getTime();
+              });
+              
+              setTasks(tasksList);
+              setLoading(false);
+              setError(null);
+              console.log('High priority tasks with projects updated:', tasksList.length);
+            },
+            (tasksError) => {
+              console.error('Error in high priority tasks with projects listener:', tasksError);
+              setError('Failed to load high priority tasks');
+              setLoading(false);
+            }
+          );
+        },
+        (projectsError) => {
+          console.error('Error in projects listener for dashboard:', projectsError);
+          setError('Failed to load projects for tasks');
+          setLoading(false);
+        }
+      );
+    } catch (error) {
+      console.error('Error setting up high priority tasks with projects listener:', error);
+      setError('Failed to setup high priority tasks listener');
+      setLoading(false);
+    }
+
+    // Cleanup function
+    return () => {
+      if (tasksUnsubscribe) {
+        tasksUnsubscribe();
+        console.log('High priority tasks with projects (tasks) listener cleaned up');
+      }
+      if (projectsUnsubscribe) {
+        projectsUnsubscribe();
+        console.log('High priority tasks with projects (projects) listener cleaned up');
+      }
+    };
+  }, [mounted]);
 
   return { tasks, loading, error };
 }

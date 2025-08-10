@@ -2,98 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useProjects, useTasks, useTaskOperations, useProjectOperations } from '@/hooks';
-import { createProject } from '@/lib/firebase-operations';
 import { Project } from '@/lib/types';
 import { TaskRow } from '@/components/tasks';
-import CreateProjectModal from './CreateProjectModal';
 
-// Simple inline project creation form
-function CreateProjectForm({ onClose }: { onClose: () => void }) {
-  const [projectName, setProjectName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!projectName.trim()) {
-      setError('Proje ismi gereklidir');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await createProject({ name: projectName.trim() });
-      console.log('Project created successfully:', projectName);
-      onClose();
-    } catch (error) {
-      console.error('Error creating project:', error);
-      setError('Proje oluşturulurken hata oluştu');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-      <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-        <h2 className="text-lg font-semibold mb-4">Yeni Proje Oluştur</h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="project-name" className="block text-sm font-medium text-gray-700 mb-1">
-              Proje İsmi
-            </label>
-            <input
-              id="project-name"
-              type="text"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              placeholder="Örn: E-Ticaret Platformu, Mobil Uygulama..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              disabled={isLoading}
-              autoFocus
-            />
-            {error && (
-              <p className="mt-1 text-sm text-red-600">{error}</p>
-            )}
-          </div>
-
-          <div className="text-sm text-gray-500">
-            <p>💡 İpucu: Proje oluşturduktan sonra görevler ekleyebilirsiniz.</p>
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-4 border-t">
-            <button 
-              type="button"
-              onClick={onClose}
-              disabled={isLoading}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-            >
-              İptal
-            </button>
-            <button 
-              type="submit"
-              disabled={isLoading || !projectName.trim()}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Oluşturuluyor...
-                </>
-              ) : (
-                'Proje Oluştur'
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
 
 
 // Individual project accordion item
@@ -130,26 +41,32 @@ function ProjectItem({ project }: { project: Project }) {
               )}
             </button>
             
-            {/* Project Name */}
-            <h3 className="font-semibold text-gray-900">{project.name}</h3>
+            {/* Project Name with Add Task Icon */}
+            <div className="flex items-center space-x-2">
+              <h3 className="font-semibold text-gray-900">{project.name}</h3>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCreateTask();
+                }}
+                className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                title="Yeni görev ekle"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
           </div>
           
           {/* Task Counter */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center">
             <span className="text-sm text-gray-500">
-              {completedTasks}/{totalTasks} tamamlandı
+              {totalTasks} görev
+              {completedTasks > 0 && (
+                <span className="text-green-600"> ({completedTasks} tamamlandı)</span>
+              )}
             </span>
-            {totalTasks > 0 && (
-              <div className="flex">
-                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                  completedTasks === totalTasks 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-blue-100 text-blue-800'
-                }`}>
-                  {Math.round((completedTasks / totalTasks) * 100)}%
-                </span>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -158,21 +75,27 @@ function ProjectItem({ project }: { project: Project }) {
       {isExpanded && (
         <div className="px-4 pb-4">
           <div className="border-t pt-4">
-            {/* Add Task Button */}
+            {/* Tasks Container */}
             <div className="mb-4">
-              <button 
-                className="w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCreateTask();
-                }}
-              >
-                + Yeni Görev Ekle
-              </button>
+              {/* Removed full-width button - now using + icon in header */}
             </div>
             
             {/* Tasks List */}
-            <div className="space-y-2">
+            <div>
+              {/* Table Header - only show when tasks exist */}
+              {tasks.length > 0 && (
+                <div className="grid grid-cols-12 gap-2 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 px-3 py-2 rounded-t-lg">
+                  <div className="col-span-6 sm:col-span-4">Görev</div>
+                  <div className="col-span-2 text-center">Öncelik</div>
+                  <div className="col-span-2 text-center hidden sm:block">Tür</div>
+                  <div className="col-span-2 text-center">Durum</div>
+                  <div className="col-span-1 text-center hidden sm:block">Kişi</div>
+                  <div className="col-span-2 sm:col-span-1 text-center">Tarih</div>
+                </div>
+              )}
+              
+              {/* Tasks Table */}
+              <div className={tasks.length > 0 ? "" : "space-y-2"}>
               {tasksLoading ? (
                 <div className="text-center py-4">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mx-auto"></div>
@@ -198,6 +121,7 @@ function ProjectItem({ project }: { project: Project }) {
                   />
                 ))
               )}
+              </div>
             </div>
           </div>
         </div>
@@ -210,7 +134,6 @@ function ProjectItem({ project }: { project: Project }) {
 export default function ProjectAccordion() {
   const { projects, loading, error } = useProjects();
   const { handleCreateProject } = useProjectOperations();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   // Fix hydration mismatch

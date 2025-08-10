@@ -31,6 +31,11 @@ export interface Task {
   createdAt: Timestamp;
 }
 
+// Task with project information (for dashboard)
+export interface TaskWithProject extends Task {
+  projectName: string;
+}
+
 // CRUD operation types for creating projects
 export interface CreateProjectData {
   name: string;

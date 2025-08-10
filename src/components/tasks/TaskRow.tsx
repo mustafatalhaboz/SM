@@ -36,48 +36,62 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
 
   return (
     <div 
-      className="bg-gray-50 border rounded-lg p-3 hover:bg-white transition-colors cursor-pointer"
+      className="grid grid-cols-12 gap-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 px-3 py-3 cursor-pointer transition-colors"
       onClick={handleTaskClick}
     >
-      <div className="flex items-center justify-between">
-        {/* Left side - Title and badges */}
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          <h5 className="font-medium text-gray-900 text-sm truncate flex-1">
-            {task.title}
-          </h5>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full border ${priorityColors[task.priority]}`}>
-            {task.priority}
-          </span>
-          <span className={`px-2 py-1 text-xs font-medium rounded ${statusColors[task.status]}`}>
-            {task.status}
-          </span>
-        </div>
+      {/* Görev - 6 cols mobile, 4 cols desktop */}
+      <div className="col-span-6 sm:col-span-4 flex items-center min-w-0">
+        <h5 className="font-medium text-gray-900 text-sm truncate">
+          {task.title}
+        </h5>
+      </div>
+      
+      {/* Öncelik - 2 columns */}
+      <div className="col-span-2 flex items-center justify-center">
+        <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full border ${priorityColors[task.priority]}`}>
+          {task.priority}
+        </span>
+      </div>
+      
+      {/* Tür - 2 columns, hidden on mobile */}
+      <div className="col-span-2 hidden sm:flex items-center justify-center">
+        <span className="text-xs text-gray-600 capitalize">{task.type}</span>
+      </div>
+      
+      {/* Durum - 2 columns */}
+      <div className="col-span-2 flex items-center justify-center">
+        <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${statusColors[task.status]}`}>
+          {task.status}
+        </span>
+      </div>
+      
+      {/* Kişi - 1 column, hidden on mobile */}
+      <div className="col-span-1 hidden sm:flex items-center justify-center">
+        <span className="text-xs text-gray-400 truncate">
+          {task.assignedPerson || 'Atanmamış'}
+        </span>
+      </div>
+      
+      {/* Tarih - 2 cols mobile, 1 col desktop */}
+      <div className="col-span-2 sm:col-span-1 flex items-center justify-center space-x-1">
+        <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
+          {task.deadline.toLocaleDateString('tr-TR', { 
+            day: 'numeric', 
+            month: 'short' 
+          })}
+          {isOverdue && ' ⚠️'}
+        </span>
         
-        {/* Right side - Type, person, deadline, delete button */}
-        <div className="flex items-center space-x-4 text-xs text-gray-500 ml-4">
-          <span className="capitalize min-w-0">{task.type}</span>
-          <span className="text-gray-400 min-w-0">
-            {task.assignedPerson || 'Atanmamış'}
-          </span>
-          <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
-            {task.deadline.toLocaleDateString('tr-TR', { 
-              day: 'numeric', 
-              month: 'short' 
-            })}
-            {isOverdue && ' ⚠️'}
-          </span>
-          
-          {/* Delete button */}
-          <button
-            onClick={handleDeleteClick}
-            className="text-red-400 hover:text-red-600 transition-colors p-1"
-            title="Görevi sil"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
-        </div>
+        {/* Delete button */}
+        <button
+          onClick={handleDeleteClick}
+          className="text-red-400 hover:text-red-600 transition-colors p-1 ml-1"
+          title="Görevi sil"
+        >
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
       </div>
     </div>
   );
