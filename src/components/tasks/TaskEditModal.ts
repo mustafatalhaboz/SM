@@ -2,6 +2,8 @@ import { Task, UpdateTaskData, TaskStatus, TaskType, TaskPriority, TASK_STATUS_O
 import { updateTask } from '@/lib/firebase-operations';
 import { logger } from '@/lib/logger';
 
+// Updated input text colors for visual consistency with modal header
+
 interface TaskEditModalOptions {
   task: Task;
   onSuccess?: () => void;
