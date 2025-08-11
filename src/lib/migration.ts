@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { logger } from './logger';
 
@@ -22,7 +22,7 @@ export async function migrateProjectOrder(): Promise<void> {
     const snapshot = await getDocs(projectsRef);
     
     const projectsWithoutOrder: string[] = [];
-    const projects: { id: string; createdAt: any }[] = [];
+    const projects: { id: string; createdAt: Timestamp | null }[] = [];
     
     snapshot.forEach((document) => {
       const data = document.data();
