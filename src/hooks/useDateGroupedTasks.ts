@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { TaskWithProject } from '@/lib/types';
-import { isToday, isTomorrow, isDayAfter, isLater } from '@/lib/dateUtils';
+import { isToday, isTomorrow, isDayAfter, isLater, isOverdue } from '@/lib/dateUtils';
 
 export interface DateGroup {
-  key: 'today' | 'tomorrow' | 'dayAfter' | 'later';
+  key: 'today' | 'tomorrow' | 'dayAfter' | 'later' | 'overdue';
   title: string;
   emoji: string;
   tasks: TaskWithProject[];
@@ -28,10 +28,11 @@ export function useDateGroupedTasks(tasks: TaskWithProject[]): UseDateGroupedTas
     const incompleteTasks = tasks.filter(task => task.status !== 'Yapıldı');
     
     // Group tasks by date categories
+    const overdueTasks = incompleteTasks.filter(task => isOverdue(task.deadline));
     const todayTasks = incompleteTasks.filter(task => isToday(task.deadline));
     const tomorrowTasks = incompleteTasks.filter(task => isTomorrow(task.deadline));
     const dayAfterTasks = incompleteTasks.filter(task => isDayAfter(task.deadline));
-    const laterTasks = incompleteTasks.filter(task => isLater(task.deadline));
+    const laterTasks = incompleteTasks.filter(task => isLater(task.deadline) && !isOverdue(task.deadline));
     
     // Sort each group by priority (high to low) then by deadline
     const sortTasks = (taskList: TaskWithProject[]): TaskWithProject[] => {
@@ -49,13 +50,22 @@ export function useDateGroupedTasks(tasks: TaskWithProject[]): UseDateGroupedTas
     
     const dateGroups: DateGroup[] = [
       {
+        key: 'overdue',
+        title: 'Geciken Görevler',
+        emoji: '⚠️',
+        tasks: sortTasks(overdueTasks),
+        count: overdueTasks.length,
+        isDefaultExpanded: true,
+        color: 'red' // Critical
+      },
+      {
         key: 'today',
         title: 'Bugünün Görevleri',
         emoji: '📅',
         tasks: sortTasks(todayTasks),
         count: todayTasks.length,
         isDefaultExpanded: true,
-        color: 'red' // Urgent
+        color: 'orange' // Urgent
       },
       {
         key: 'tomorrow',
@@ -64,7 +74,7 @@ export function useDateGroupedTasks(tasks: TaskWithProject[]): UseDateGroupedTas
         tasks: sortTasks(tomorrowTasks),
         count: tomorrowTasks.length,
         isDefaultExpanded: false,
-        color: 'orange' // Soon
+        color: 'yellow' // Soon
       },
       {
         key: 'dayAfter',
@@ -73,7 +83,7 @@ export function useDateGroupedTasks(tasks: TaskWithProject[]): UseDateGroupedTas
         tasks: sortTasks(dayAfterTasks),
         count: dayAfterTasks.length,
         isDefaultExpanded: false,
-        color: 'yellow' // Upcoming
+        color: 'green' // Upcoming
       },
       {
         key: 'later',

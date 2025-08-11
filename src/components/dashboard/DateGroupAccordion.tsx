@@ -137,13 +137,15 @@ export default function DateGroupAccordion({ group, onCompleteTask }: DateGroupA
     red: 'border-red-200 bg-red-50',
     orange: 'border-orange-200 bg-orange-50', 
     yellow: 'border-yellow-200 bg-yellow-50',
+    green: 'border-green-200 bg-green-50',
     blue: 'border-blue-200 bg-blue-50'
   };
 
   const headerColorClasses = {
     red: 'text-red-800 bg-red-50',
     orange: 'text-orange-800 bg-orange-50',
-    yellow: 'text-yellow-800 bg-yellow-50', 
+    yellow: 'text-yellow-800 bg-yellow-50',
+    green: 'text-green-800 bg-green-50', 
     blue: 'text-blue-800 bg-blue-50'
   };
 
