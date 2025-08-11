@@ -39,6 +39,7 @@ interface Project {
   id: string;
   name: string;
   createdAt: timestamp;
+  order: number; // For drag & drop reordering
 }
 ```
 
@@ -252,9 +253,11 @@ service cloud.firestore {
 ## Completed Features
 - **✅ Full Task Management**: Create, edit, delete tasks with all attributes
 - **✅ Project Management**: Create, list, manage projects
+- **✅ Project Drag & Drop Reordering**: HTML5 native drag & drop with visual feedback
+- **✅ Date-based Task Organization**: Accordion grouping by Today/Tomorrow/Day After/Later
 - **✅ Professional Table Layouts**: Consistent grid-based table format for all task views
 - **✅ Real-time Updates**: Firebase Firestore real-time listeners with hydration fixes
-- **✅ Enhanced Priority Dashboard**: Table format with project labels and task completion
+- **✅ Enhanced Priority Dashboard**: Date-based accordion with color coding
 - **✅ Compact UI Design**: Space-efficient + icons and optimized layouts
 - **✅ Mobile Responsive**: Smart column hiding and adaptive layouts
 - **✅ Hydration Fixes**: Chrome extension compatibility with warning suppression
@@ -263,6 +266,7 @@ service cloud.firestore {
 - **✅ Accessibility**: ARIA compliance and keyboard navigation
 - **✅ Memory Management**: Proper cleanup, no memory leaks
 - **✅ Form Validation**: Comprehensive client-side validation
+- **✅ Auto Migration**: Seamless order field addition for existing projects
 
 ## Kapsam Dışı (MVP'de Yok)
 - User authentication
@@ -330,3 +334,18 @@ service cloud.firestore {
 - **taskConstants.ts**: Centralized messages, defaults, helper functions
 - **Type Safety**: Strong typing for all operations including TaskWithProject ⚡ YENİ
 - **Maintainability**: Magic string elimination
+
+### Drag & Drop System ⚡ YENİ
+- **HTML5 Native API**: No external dependencies, touch-friendly
+- **useDragDrop Hook**: State management ve optimistic updates
+- **Visual Feedback**: Opacity, shadows, blue drop zones
+- **Firebase Integration**: Atomic batch updates with reorderProjects()
+- **Auto Migration**: migration.ts - seamless order field addition
+
+### Date-based Task Organization ⚡ YENİ
+- **Date Utilities**: isToday, isTomorrow, isDayAfter, isLater functions
+- **useDateGroupedTasks Hook**: Smart grouping with priority + deadline sorting
+- **DateGroupAccordion Component**: Color-coded expandable sections
+- **Visual Themes**: 📅 Red (today), 📋 Orange (tomorrow), 📝 Yellow (day after), 📊 Blue (later)
+- **Smart Defaults**: Today expanded, others collapsed
+- **Empty State Handling**: Auto-hide groups with no tasks
