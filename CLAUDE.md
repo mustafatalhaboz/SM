@@ -268,16 +268,68 @@ service cloud.firestore {
 - **✅ Form Validation**: Comprehensive client-side validation
 - **✅ Auto Migration**: Seamless order field addition for existing projects
 
+## Gelecek Planlama (Future Roadmap) 🚀
+
+### 1. **Multi-Company Management**
+- **Problem**: İki şirketi yönetiyorum, projelerin hangi şirkete ait olduğunu takip etmek gerekiyor
+- **Çözüm**: 
+  - Project model'ine `company` field ekleme
+  - Özet alanında şirket bilgisi gösterme
+  - Şirkete göre filtreleme ve raporlama
+- **Tahmini Süre**: 1-2 hafta
+
+### 2. **Operasyonel Görev Süre Takibi**
+- **Problem**: Görevlere ne kadar süre ayıracağımı bilmek ve günümü planlamak
+- **Çözüm**:
+  - Task model'ine `estimatedDuration` ve `actualDuration` field'ları
+  - Süre girişi UI component'leri
+  - Günlük/haftalık planlama dashboard'u
+- **Tahmini Süre**: 1 hafta
+
+### 3. **Google Calendar Integration**
+- **Problem**: İki şirketin takvimlerini birleştirilmiş olarak görmek ve toplantı oluşturmak
+- **Çözüm**:
+  - Google Calendar API entegrasyonu
+  - Multi-account calendar view
+  - Google Meet entegre toplantı oluşturma
+  - Zaman aralığı ve kişi seçimi ile toplantı planlama
+- **Tahmini Süre**: 2-3 hafta
+
+### 4. **Gmail Integration**
+- **Problem**: İki şirketin Gmail hesaplarını yönetmek ve e-posta takibi
+- **Çözüm**:
+  - Gmail API entegrasyonu
+  - Unified inbox görünümü
+  - E-posta thread görüntüleme
+  - Hızlı yanıtlama özellikleri
+- **Tahmini Süre**: 2-3 hafta
+
+### 5. **ClickUp Integration**
+- **Problem**: ClickUp'daki projeleri ve görevleri merkezi olarak yönetmek
+- **Çözüm**:
+  - ClickUp API entegrasyonu
+  - Spaces, lists, tasks senkronizasyonu
+  - Durum takibi ve atama görüntüleme
+  - İki yönlü task oluşturma/güncelleme
+- **Tahmini Süre**: 2-3 hafta
+
+### 6. **AI-Powered Email Intelligence**
+- **Problem**: Önemli e-postaları spam/otomatik e-postalardan ayırmak
+- **Çözüm**:
+  - LLM entegrasyonu (OpenAI GPT/Claude)
+  - E-posta sınıflandırması (müşteri/gerçek vs otomatik/abonelik)
+  - Yönetici özeti ve aksiyon önerileri
+  - Smart filtering ve prioritization
+- **Tahmini Süre**: 3-4 hafta
+
 ## Kapsam Dışı (MVP'de Yok)
-- User authentication
+- User authentication (şimdilik tek kullanıcı)
 - File attachments
 - Advanced reporting
-- Email notifications
-- Mobile app
+- Mobile app (responsive web yeterli)
 - Data export
 - Bulk operations
 - Task dependencies
-- Time tracking
 - Comments/collaboration
 
 ## Development Notes
