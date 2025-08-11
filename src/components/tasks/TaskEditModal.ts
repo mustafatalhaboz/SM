@@ -71,7 +71,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
               type="text" 
               id="task-title" 
               value="${escapeHtml(task.title)}"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
               maxlength="200"
             />
@@ -86,7 +86,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
             <textarea 
               id="task-description" 
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Görev açıklaması..."
               maxlength="1000"
             >${escapeHtml(task.description || '')}</textarea>
@@ -101,7 +101,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
               </label>
               <select 
                 id="task-status"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 ${createSelectOptions(TASK_STATUS_OPTIONS, task.status)}
               </select>
@@ -114,7 +114,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
               </label>
               <select 
                 id="task-type"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 ${createSelectOptions(TASK_TYPE_OPTIONS, task.type)}
               </select>
@@ -127,7 +127,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
               </label>
               <select 
                 id="task-priority"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 ${createSelectOptions(TASK_PRIORITY_OPTIONS, task.priority)}
               </select>
@@ -145,7 +145,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
                 type="text" 
                 id="task-assigned" 
                 value="${escapeHtml(task.assignedPerson || '')}"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Kişi ismi..."
                 maxlength="100"
               />
@@ -160,7 +160,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
                 type="date" 
                 id="task-deadline" 
                 value="${formatDateForInput(task.deadline)}"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
