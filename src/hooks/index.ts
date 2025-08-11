@@ -7,3 +7,6 @@ export { useProjectOperations } from './useProjectOperations';
 
 // Custom hooks for drag & drop
 export { useDragDrop } from './useDragDrop';
+
+// Custom hooks for date grouping
+export { useDateGroupedTasks } from './useDateGroupedTasks';
