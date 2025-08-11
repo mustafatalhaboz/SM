@@ -9,17 +9,20 @@ const SAMPLE_PROJECTS: Project[] = [
   {
     id: 'project-1',
     name: 'E-Ticaret Platformu',
-    createdAt: Timestamp.now()
+    createdAt: Timestamp.now(),
+    order: 0
   },
   {
     id: 'project-2', 
     name: 'Mobil Uygulama Geliştirme',
-    createdAt: Timestamp.now()
+    createdAt: Timestamp.now(),
+    order: 1
   },
   {
     id: 'project-3',
     name: 'Kurumsal Website',
-    createdAt: Timestamp.now()
+    createdAt: Timestamp.now(),
+    order: 2
   }
 ];
 

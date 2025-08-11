@@ -4,3 +4,6 @@ export { useProjects, useTasks, useHighPriorityTasks, useHighPriorityTasksWithPr
 // Custom hooks for operations
 export { useTaskOperations } from './useTaskOperations';
 export { useProjectOperations } from './useProjectOperations';
+
+// Custom hooks for drag & drop
+export { useDragDrop } from './useDragDrop';

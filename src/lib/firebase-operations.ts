@@ -19,6 +19,7 @@ import {
   CreateProjectData, 
   CreateTaskData, 
   UpdateTaskData,
+  UpdateProjectData,
   TaskPriority
 } from './types';
 import { logger } from './logger';
@@ -29,7 +30,8 @@ function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
   return {
     id: doc.id,
     name: data.name,
-    createdAt: data.createdAt
+    createdAt: data.createdAt,
+    order: data.order ?? 0 // Default to 0 if not set (migration support)
   };
 }
 
@@ -60,11 +62,20 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
 export async function createProject(data: CreateProjectData): Promise<string> {
   try {
     const projectsRef = collection(db, 'projects');
+    
+    // Get the next order value if not provided
+    let order = data.order;
+    if (order === undefined) {
+      const existingProjects = await getProjects();
+      order = existingProjects.length > 0 ? Math.max(...existingProjects.map(p => p.order)) + 1 : 0;
+    }
+    
     const docRef = await addDoc(projectsRef, {
       name: data.name,
+      order: order,
       createdAt: Timestamp.now()
     });
-    logger.firebaseOperation('createProject', true, { projectId: docRef.id, name: data.name });
+    logger.firebaseOperation('createProject', true, { projectId: docRef.id, name: data.name, order });
     return docRef.id;
   } catch (error) {
     logger.firebaseOperation('createProject', false, error);
@@ -79,7 +90,8 @@ export async function createProject(data: CreateProjectData): Promise<string> {
 export async function getProjects(): Promise<Project[]> {
   try {
     const projectsRef = collection(db, 'projects');
-    const q = query(projectsRef, orderBy('createdAt', 'desc'));
+    // Order by custom order field (for drag & drop), then by creation date as fallback
+    const q = query(projectsRef, orderBy('order', 'asc'), orderBy('createdAt', 'desc'));
     const querySnapshot = await getDocs(q);
     
     const projects: Project[] = [];
@@ -267,5 +279,51 @@ export async function getHighPriorityTasks(): Promise<Task[]> {
   } catch (error) {
     logger.firebaseOperation('getHighPriorityTasks', false, error);
     throw new Error('Failed to get high priority tasks');
+  }
+}
+
+// PROJECT ORDERING OPERATIONS (for drag & drop)
+
+/**
+ * Updates a project's order field
+ * @param projectId ID of the project to update
+ * @param data Update data including order
+ */
+export async function updateProject(projectId: string, data: UpdateProjectData): Promise<void> {
+  try {
+    const projectRef = doc(db, 'projects', projectId);
+    await updateDoc(projectRef, { ...data });
+    
+    logger.firebaseOperation('updateProject', true, { projectId });
+  } catch (error) {
+    logger.firebaseOperation('updateProject', false, error);
+    throw new Error('Failed to update project');
+  }
+}
+
+/**
+ * Reorders projects based on new array order
+ * @param projectIds Array of project IDs in the new order
+ */
+export async function reorderProjects(projectIds: string[]): Promise<void> {
+  try {
+    console.log('🔄 Reordering projects:', projectIds);
+    
+    const updatePromises: Promise<void>[] = [];
+    
+    projectIds.forEach((projectId, index) => {
+      console.log(`📝 Updating project ${projectId} to order ${index}`);
+      const projectRef = doc(db, 'projects', projectId);
+      updatePromises.push(updateDoc(projectRef, { order: index }));
+    });
+    
+    await Promise.all(updatePromises);
+    
+    console.log('✅ Projects reordered successfully');
+    logger.firebaseOperation('reorderProjects', true, { count: projectIds.length });
+  } catch (error) {
+    console.error('❌ Reorder failed:', error);
+    logger.firebaseOperation('reorderProjects', false, error);
+    throw new Error('Failed to reorder projects');
   }
 }

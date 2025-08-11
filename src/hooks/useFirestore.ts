@@ -12,6 +12,7 @@ import {
 import { db } from '../lib/firebase';
 import { Project, Task, TaskPriority, TaskWithProject } from '../lib/types';
 import { logger } from '../lib/logger';
+import { migrateProjectOrder } from '../lib/migration';
 
 // Helper function to convert Firestore document to Project
 function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
@@ -19,7 +20,8 @@ function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
   return {
     id: doc.id,
     name: data.name,
-    createdAt: data.createdAt
+    createdAt: data.createdAt,
+    order: data.order ?? 0 // Default to 0 if not set (migration support)
   };
 }
 
@@ -86,7 +88,11 @@ export function useProjects(): UseProjectsReturn {
 
     try {
       const projectsRef = collection(db, 'projects');
-      const q = query(projectsRef, orderBy('createdAt', 'desc'));
+      // Order by custom order field (for drag & drop), fallback to creation date
+      const q = query(projectsRef, orderBy('order', 'asc'), orderBy('createdAt', 'desc'));
+      
+      // Run migration first time when projects are loaded
+      migrateProjectOrder();
 
       unsubscribe = onSnapshot(q, 
         (querySnapshot) => {

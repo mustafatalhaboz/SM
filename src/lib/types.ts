@@ -15,6 +15,7 @@ export interface Project {
   id: string;
   name: string;
   createdAt: Timestamp;
+  order: number; // For drag & drop reordering
 }
 
 // Task interface based on CLAUDE.md data model
@@ -39,6 +40,13 @@ export interface TaskWithProject extends Task {
 // CRUD operation types for creating projects
 export interface CreateProjectData {
   name: string;
+  order?: number; // Optional for create, auto-generated if not provided
+}
+
+// CRUD operation types for updating projects
+export interface UpdateProjectData {
+  name?: string;
+  order?: number;
 }
 
 // CRUD operation types for creating tasks
