@@ -33,9 +33,7 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     projectId: data.projectId,
     title: data.title,
     description: data.description,
-    assignedPerson: data.assignedPerson,
     status: data.status,
-    type: data.type,
     priority: data.priority,
     deadline: data.deadline.toDate(),
     createdAt: data.createdAt

@@ -33,10 +33,8 @@ export function useTaskOperations({ projectId }: UseTaskOperationsProps): UseTas
         projectId,
         title: taskTitle.trim(),
         status: TASK_DEFAULTS.STATUS,
-        type: TASK_DEFAULTS.TYPE,
         priority: TASK_DEFAULTS.PRIORITY,
         description: TASK_DEFAULTS.DESCRIPTION,
-        assignedPerson: TASK_DEFAULTS.ASSIGNED_PERSON,
         deadline: getDefaultDeadline()
       });
       

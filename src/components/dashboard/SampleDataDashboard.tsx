@@ -10,9 +10,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'React Native mobil uygulama geliştirme',
     description: 'iOS ve Android için hibrit uygulama',
-    assignedPerson: 'Ahmet Yılmaz',
     status: 'Yapılıyor',
-    type: 'Operasyon',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 15), // 15 Ocak 2025
     createdAt: Timestamp.now()
@@ -22,9 +20,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-2',
     title: 'E-ticaret API entegrasyonu',
     description: 'PayU ve iyzico ödeme sistemleri',
-    assignedPerson: 'Zeynep Kaya',
     status: 'Beklemede',
-    type: 'Yönlendirme',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 8), // 8 Ocak 2025 (geçmiş)
     createdAt: Timestamp.now()
@@ -34,9 +30,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'Veritabanı optimizasyonu',
     description: 'PostgreSQL query performance',
-    assignedPerson: 'Can Demir',
     status: 'Yapılacak',
-    type: 'Operasyon',
     priority: 'Orta',
     deadline: new Date(2025, 0, 20), // 20 Ocak 2025
     createdAt: Timestamp.now()
@@ -46,9 +40,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-3',
     title: 'UI/UX tasarım revizyonu',
     description: 'Kullanıcı deneyimi iyileştirmeleri',
-    assignedPerson: 'Selin Özkan',
     status: 'Yapılıyor',
-    type: 'Operasyon',
     priority: 'Orta',
     deadline: new Date(2025, 0, 18), // 18 Ocak 2025
     createdAt: Timestamp.now()
@@ -58,9 +50,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-2',
     title: 'Güvenlik testi ve penetrasyon',
     description: 'OWASP standartları kontrolü',
-    assignedPerson: '',
     status: 'Blocked',
-    type: 'Takip',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 12), // 12 Ocak 2025
     createdAt: Timestamp.now()
@@ -115,12 +105,8 @@ function TaskRow({ task }: { task: Task }) {
           <StatusBadge status={task.status} />
         </div>
         
-        {/* Right side - Type, person, deadline */}
+        {/* Right side - deadline */}
         <div className="flex items-center space-x-4 text-xs text-gray-500 ml-4">
-          <span className="capitalize min-w-0">{task.type}</span>
-          <span className="text-gray-400 min-w-0">
-            {task.assignedPerson || 'Atanmamış'}
-          </span>
           <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
             {task.deadline.toLocaleDateString('tr-TR', { 
               day: 'numeric', 

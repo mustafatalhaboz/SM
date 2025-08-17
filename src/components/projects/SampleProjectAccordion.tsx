@@ -34,9 +34,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'Ödeme sistemi entegrasyonu',
     description: 'PayU ve iyzico entegrasyonu',
-    assignedPerson: 'Zeynep Kaya',
     status: 'Yapılıyor',
-    type: 'Operasyon',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 15),
     createdAt: Timestamp.now()
@@ -46,9 +44,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'Ürün kataloğu API',
     description: 'REST API geliştirme',
-    assignedPerson: 'Ali Demir',
     status: 'Yapıldı',
-    type: 'Operasyon',
     priority: 'Orta',
     deadline: new Date(2025, 0, 10),
     createdAt: Timestamp.now()
@@ -58,9 +54,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'Kullanıcı yönetimi',
     description: 'Kayıt ve giriş sistemi',
-    assignedPerson: 'Selin Özkan',
     status: 'Beklemede',
-    type: 'Yönlendirme',
     priority: 'Orta',
     deadline: new Date(2025, 0, 20),
     createdAt: Timestamp.now()
@@ -71,9 +65,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-2',
     title: 'React Native kurulumu',
     description: 'Proje altyapısı hazırlığı',
-    assignedPerson: 'Ahmet Yılmaz',
     status: 'Yapıldı',
-    type: 'Operasyon',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 8),
     createdAt: Timestamp.now()
@@ -83,9 +75,7 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-2',
     title: 'Push notification servisi',
     description: 'Firebase FCM entegrasyonu',
-    assignedPerson: 'Can Demir',
     status: 'Blocked',
-    type: 'Takip',
     priority: 'Orta',
     deadline: new Date(2025, 0, 25),
     createdAt: Timestamp.now()
@@ -127,12 +117,8 @@ function TaskRow({ task }: { task: Task }) {
           </span>
         </div>
         
-        {/* Right side - Type, person, deadline */}
+        {/* Right side - deadline */}
         <div className="flex items-center space-x-4 text-xs text-gray-500 ml-4">
-          <span className="capitalize min-w-0">{task.type}</span>
-          <span className="text-gray-400 min-w-0">
-            {task.assignedPerson || 'Atanmamış'}
-          </span>
           <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
             {task.deadline.toLocaleDateString('tr-TR', { 
               day: 'numeric', 

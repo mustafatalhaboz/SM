@@ -1,13 +1,11 @@
-import { Task, TaskStatus, TaskType, TaskPriority } from '@/lib/types';
+import { Task, TaskStatus, TaskPriority } from '@/lib/types';
 
 // Default task values
 export const TASK_DEFAULTS = {
   STATUS: 'Yapılacak' as TaskStatus,
-  TYPE: 'Operasyon' as TaskType,
   PRIORITY: 'Orta' as TaskPriority,
   DEADLINE_DAYS: 7,
-  DESCRIPTION: '',
-  ASSIGNED_PERSON: ''
+  DESCRIPTION: ''
 } as const;
 
 // UI Messages for task operations
@@ -34,6 +32,17 @@ export const TASK_MESSAGES = {
   TITLE_REQUIRED: 'Görev başlığı gereklidir',
   PROJECT_NAME_REQUIRED: 'Proje ismi gereklidir',
   
+  // Section labels
+  ACTIVE_TASKS_HEADER: 'Aktif Görevler',
+  COMPLETED_TASKS_HEADER: 'Tamamlanan Görevler',
+  ALL_TASKS_COMPLETED: 'Tüm görevler tamamlandı!',
+  NO_ACTIVE_TASKS: 'Aktif görev yok',
+  NO_COMPLETED_TASKS: 'Tamamlanan görev yok',
+  
+  // Status messages
+  LOADING_ACTIVE_TASKS: 'Aktif görevler yükleniyor...',
+  LOADING_COMPLETED_TASKS: 'Tamamlanan görevler yükleniyor...',
+  
   // Placeholders
   UPCOMING_FEATURE: 'Görev düzenleme modalı yakında eklenecek!'
 } as const;
@@ -48,9 +57,7 @@ export const formatTaskDetails = (task: Task) => {
   return `
 Görev: ${task.title}
 Açıklama: ${task.description || 'Yok'}
-Atanan: ${task.assignedPerson || 'Atanmamış'}
 Durum: ${task.status}
-Tip: ${task.type}
 Öncelik: ${task.priority}
 Termin: ${task.deadline.toLocaleDateString('tr-TR')}
   `.trim();

@@ -39,8 +39,8 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
       className="grid grid-cols-12 gap-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 px-3 py-3 cursor-pointer transition-colors"
       onClick={handleTaskClick}
     >
-      {/* Görev - 6 cols mobile, 4 cols desktop */}
-      <div className="col-span-6 sm:col-span-4 flex items-center min-w-0">
+      {/* Görev - 6 columns */}
+      <div className="col-span-6 flex items-center min-w-0">
         <h5 className="font-medium text-gray-900 text-sm truncate">
           {task.title}
         </h5>
@@ -53,11 +53,6 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
         </span>
       </div>
       
-      {/* Tür - 2 columns, hidden on mobile */}
-      <div className="col-span-2 hidden sm:flex items-center justify-center">
-        <span className="text-xs text-gray-600 capitalize">{task.type}</span>
-      </div>
-      
       {/* Durum - 2 columns */}
       <div className="col-span-2 flex items-center justify-center">
         <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${statusColors[task.status]}`}>
@@ -65,15 +60,8 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
         </span>
       </div>
       
-      {/* Kişi - 1 column, hidden on mobile */}
-      <div className="col-span-1 hidden sm:flex items-center justify-center">
-        <span className="text-xs text-gray-400 truncate">
-          {task.assignedPerson || 'Atanmamış'}
-        </span>
-      </div>
-      
-      {/* Tarih - 2 cols mobile, 1 col desktop */}
-      <div className="col-span-2 sm:col-span-1 flex items-center justify-center space-x-1">
+      {/* Tarih - 2 columns */}
+      <div className="col-span-2 flex items-center justify-center space-x-1">
         <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
           {task.deadline.toLocaleDateString('tr-TR', { 
             day: 'numeric', 

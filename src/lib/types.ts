@@ -4,8 +4,6 @@ import { Timestamp } from 'firebase/firestore';
 // Status options for tasks
 export type TaskStatus = 'Yapılacak' | 'Yapılıyor' | 'Beklemede' | 'Blocked' | 'Yapıldı';
 
-// Type options for tasks
-export type TaskType = 'Operasyon' | 'Yönlendirme' | 'Takip';
 
 // Priority options for tasks
 export type TaskPriority = 'Yüksek' | 'Orta' | 'Düşük';
@@ -24,9 +22,7 @@ export interface Task {
   projectId: string;
   title: string;
   description: string;
-  assignedPerson: string;
   status: TaskStatus;
-  type: TaskType;
   priority: TaskPriority;
   deadline: Date;
   createdAt: Timestamp;
@@ -54,9 +50,7 @@ export interface CreateTaskData {
   projectId: string;
   title: string;
   description?: string;
-  assignedPerson?: string;
   status?: TaskStatus;
-  type?: TaskType;
   priority?: TaskPriority;
   deadline?: Date;
 }
@@ -64,19 +58,15 @@ export interface CreateTaskData {
 // Default values for quick task creation
 export const DEFAULT_TASK_VALUES: Partial<CreateTaskData> = {
   status: 'Yapılacak',
-  type: 'Operasyon',
   priority: 'Orta',
-  description: '',
-  assignedPerson: ''
+  description: ''
 };
 
 // CRUD operation types for updating tasks
 export interface UpdateTaskData {
   title?: string;
   description?: string;
-  assignedPerson?: string;
   status?: TaskStatus;
-  type?: TaskType;
   priority?: TaskPriority;
   deadline?: Date;
 }
@@ -89,5 +79,4 @@ export type ProjectFormData = Omit<Project, 'id' | 'createdAt'>;
 
 // Arrays for dropdown options (for UI components)
 export const TASK_STATUS_OPTIONS: TaskStatus[] = ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'];
-export const TASK_TYPE_OPTIONS: TaskType[] = ['Operasyon', 'Yönlendirme', 'Takip'];  
 export const TASK_PRIORITY_OPTIONS: TaskPriority[] = ['Yüksek', 'Orta', 'Düşük'];

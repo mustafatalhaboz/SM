@@ -254,7 +254,8 @@ service cloud.firestore {
 - **✅ Full Task Management**: Create, edit, delete tasks with all attributes
 - **✅ Project Management**: Create, list, manage projects
 - **✅ Project Drag & Drop Reordering**: HTML5 native drag & drop with visual feedback
-- **✅ Date-based Task Organization**: Accordion grouping by Today/Tomorrow/Day After/Later
+- **✅ Date-based Task Organization**: Accordion grouping by Overdue/Today/Tomorrow/Day After/Later
+- **✅ Overdue Tasks Management**: Dedicated "Geciken Görevler" accordion with ⚠️ emoji
 - **✅ Professional Table Layouts**: Consistent grid-based table format for all task views
 - **✅ Real-time Updates**: Firebase Firestore real-time listeners with hydration fixes
 - **✅ Enhanced Priority Dashboard**: Date-based accordion with color coding
@@ -395,9 +396,10 @@ service cloud.firestore {
 - **Auto Migration**: migration.ts - seamless order field addition
 
 ### Date-based Task Organization ⚡ YENİ
-- **Date Utilities**: isToday, isTomorrow, isDayAfter, isLater functions
+- **Date Utilities**: isToday, isTomorrow, isDayAfter, isLater, isOverdue functions
 - **useDateGroupedTasks Hook**: Smart grouping with priority + deadline sorting
 - **DateGroupAccordion Component**: Color-coded expandable sections
-- **Visual Themes**: 📅 Red (today), 📋 Orange (tomorrow), 📝 Yellow (day after), 📊 Blue (later)
-- **Smart Defaults**: Today expanded, others collapsed
+- **Visual Themes**: ⚠️ Red (overdue), 📅 Orange (today), 📋 Yellow (tomorrow), 📝 Green (day after), 📊 Blue (later)
+- **Smart Defaults**: Overdue and today expanded, others collapsed
 - **Empty State Handling**: Auto-hide groups with no tasks
+- **Overdue Detection**: Automatic identification of past-due incomplete tasks

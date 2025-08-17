@@ -54,8 +54,8 @@ function TaskRow({ task, onCompleteTask }: { task: TaskWithProject; onCompleteTa
         </span>
       </div>
       
-      {/* Görev - 3 columns */}
-      <div className="col-span-4 sm:col-span-3 flex items-center min-w-0">
+      {/* Görev - 5 columns */}
+      <div className="col-span-5 flex items-center min-w-0">
         <h4 className="font-medium text-gray-900 text-sm truncate">
           {task.title}
         </h4>
@@ -66,25 +66,13 @@ function TaskRow({ task, onCompleteTask }: { task: TaskWithProject; onCompleteTa
         <PriorityBadge priority={task.priority} />
       </div>
       
-      {/* Tür - 1 column, hidden on mobile */}
-      <div className="col-span-1 hidden sm:flex items-center justify-center">
-        <span className="text-xs text-gray-600 capitalize">{task.type}</span>
-      </div>
-      
-      {/* Durum - 2 columns */}
-      <div className="col-span-2 flex items-center justify-center">
+      {/* Durum - 1 column */}
+      <div className="col-span-1 flex items-center justify-center">
         <StatusBadge status={task.status} />
       </div>
       
-      {/* Kişi - 1 column, hidden on mobile */}
-      <div className="col-span-1 hidden sm:flex items-center justify-center">
-        <span className="text-xs text-gray-400 truncate">
-          {task.assignedPerson || 'Atanmamış'}
-        </span>
-      </div>
-      
-      {/* Tarih - 1 column */}
-      <div className="col-span-2 sm:col-span-1 flex items-center justify-center space-x-1">
+      {/* Tarih - 2 columns */}
+      <div className="col-span-2 flex items-center justify-center space-x-1">
         <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : 'text-gray-600'} whitespace-nowrap`}>
           {task.deadline.toLocaleDateString('tr-TR', { 
             day: 'numeric', 
@@ -113,12 +101,10 @@ function TaskTableHeader() {
   return (
     <div className="grid grid-cols-12 gap-2 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 px-3 py-2 rounded-t-lg">
       <div className="col-span-2">Proje</div>
-      <div className="col-span-4 sm:col-span-3">Görev</div>
+      <div className="col-span-5">Görev</div>
       <div className="col-span-2 text-center">Öncelik</div>
-      <div className="col-span-1 text-center hidden sm:block">Tür</div>
-      <div className="col-span-2 text-center">Durum</div>
-      <div className="col-span-1 text-center hidden sm:block">Kişi</div>
-      <div className="col-span-2 sm:col-span-1 text-center">Tarih</div>
+      <div className="col-span-1 text-center">Durum</div>
+      <div className="col-span-2 text-center">Tarih</div>
     </div>
   );
 }

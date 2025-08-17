@@ -10,3 +10,6 @@ export { useDragDrop } from './useDragDrop';
 
 // Custom hooks for date grouping
 export { useDateGroupedTasks } from './useDateGroupedTasks';
+
+// Custom hooks for task filtering
+export { useFilteredTasks, useProjectStats } from './useFilteredTasks';

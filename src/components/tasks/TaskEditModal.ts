@@ -1,4 +1,4 @@
-import { Task, UpdateTaskData, TaskStatus, TaskType, TaskPriority, TASK_STATUS_OPTIONS, TASK_TYPE_OPTIONS, TASK_PRIORITY_OPTIONS } from '@/lib/types';
+import { Task, UpdateTaskData, TaskStatus, TaskPriority, TASK_STATUS_OPTIONS, TASK_PRIORITY_OPTIONS } from '@/lib/types';
 import { updateTask } from '@/lib/firebase-operations';
 import { logger } from '@/lib/logger';
 
@@ -94,7 +94,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
             >${escapeHtml(task.description || '')}</textarea>
           </div>
 
-          <!-- Status, Type, Priority - Row -->
+          <!-- Status, Priority, Deadline - Row -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Status -->
             <div>
@@ -109,19 +109,6 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
               </select>
             </div>
 
-            <!-- Type -->
-            <div>
-              <label for="task-type" class="block text-sm font-medium text-gray-700 mb-1">
-                Tip
-              </label>
-              <select 
-                id="task-type"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                ${createSelectOptions(TASK_TYPE_OPTIONS, task.type)}
-              </select>
-            </div>
-
             <!-- Priority -->
             <div>
               <label for="task-priority" class="block text-sm font-medium text-gray-700 mb-1">
@@ -133,24 +120,6 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
               >
                 ${createSelectOptions(TASK_PRIORITY_OPTIONS, task.priority)}
               </select>
-            </div>
-          </div>
-
-          <!-- Assigned Person and Deadline - Row -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Assigned Person -->
-            <div>
-              <label for="task-assigned" class="block text-sm font-medium text-gray-700 mb-1">
-                Atanan Kişi
-              </label>
-              <input 
-                type="text" 
-                id="task-assigned" 
-                value="${escapeHtml(task.assignedPerson || '')}"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Kişi ismi..."
-                maxlength="100"
-              />
             </div>
 
             <!-- Deadline -->
@@ -199,9 +168,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
   const titleInput = document.getElementById('task-title') as HTMLInputElement;
   const descriptionInput = document.getElementById('task-description') as HTMLTextAreaElement;
   const statusSelect = document.getElementById('task-status') as HTMLSelectElement;
-  const typeSelect = document.getElementById('task-type') as HTMLSelectElement;
   const prioritySelect = document.getElementById('task-priority') as HTMLSelectElement;
-  const assignedInput = document.getElementById('task-assigned') as HTMLInputElement;
   const deadlineInput = document.getElementById('task-deadline') as HTMLInputElement;
   const saveButton = document.getElementById('save-button') as HTMLButtonElement;
   const saveText = document.getElementById('save-text')!;
@@ -328,9 +295,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
         title: titleInput.value.trim(),
         description: descriptionInput.value.trim(),
         status: statusSelect.value as TaskStatus,
-        type: typeSelect.value as TaskType,
         priority: prioritySelect.value as TaskPriority,
-        assignedPerson: assignedInput.value.trim(),
         deadline: new Date(deadlineInput.value)
       };
 
