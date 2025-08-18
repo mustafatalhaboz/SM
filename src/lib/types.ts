@@ -8,6 +8,9 @@ export type TaskStatus = 'Yapılacak' | 'Yapılıyor' | 'Beklemede' | 'Blocked' 
 // Priority options for tasks
 export type TaskPriority = 'Yüksek' | 'Orta' | 'Düşük';
 
+// Type options for tasks
+export type TaskType = 'Operasyon' | 'Yönlendirme' | 'Takip';
+
 // Project interface based on CLAUDE.md data model
 export interface Project {
   id: string;
@@ -22,7 +25,9 @@ export interface Task {
   projectId: string;
   title: string;
   description: string;
+  assignedPerson: string;
   status: TaskStatus;
+  type: TaskType;
   priority: TaskPriority;
   deadline: Date;
   createdAt: Timestamp;
@@ -50,7 +55,9 @@ export interface CreateTaskData {
   projectId: string;
   title: string;
   description?: string;
+  assignedPerson?: string;
   status?: TaskStatus;
+  type?: TaskType;
   priority?: TaskPriority;
   deadline?: Date;
 }

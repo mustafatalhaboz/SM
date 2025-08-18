@@ -36,7 +36,9 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       projectId: taskData.projectId || projectId,
       title: taskData.title || 'Yeni Görev',
       description: taskData.description || '',
+      assignedPerson: taskData.assignedPerson || '',
       status: taskData.status || 'Yapılacak',
+      type: taskData.type || 'Operasyon',
       priority: taskData.priority || 'Orta',
       deadline: taskData.deadline || new Date(),
       createdAt: { toMillis: () => Date.now() } as any // Mock Timestamp
@@ -52,7 +54,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
   
   const removeOptimisticTask = useCallback((tempId: string) => {
     setOptimisticTasks(prev => prev.filter(task => task.id !== tempId));
-    logger.debug('Optimistic task removed', { tempId, projectId });
+    logger.debug('Optimistic task removed', { tempId, projectId } as any);
   }, [projectId]);
   
   // Combined tasks (real + optimistic) with duplicate cleanup

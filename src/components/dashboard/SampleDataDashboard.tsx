@@ -10,7 +10,9 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'React Native mobil uygulama geliştirme',
     description: 'iOS ve Android için hibrit uygulama',
+    assignedPerson: 'Mustafa Talha Boz',
     status: 'Yapılıyor',
+    type: 'Operasyon',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 15), // 15 Ocak 2025
     createdAt: Timestamp.now()
@@ -20,7 +22,9 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-2',
     title: 'E-ticaret API entegrasyonu',
     description: 'PayU ve iyzico ödeme sistemleri',
+    assignedPerson: 'Geliştirici Ekibi',
     status: 'Beklemede',
+    type: 'Yönlendirme',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 8), // 8 Ocak 2025 (geçmiş)
     createdAt: Timestamp.now()
@@ -30,7 +34,9 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-1',
     title: 'Veritabanı optimizasyonu',
     description: 'PostgreSQL query performance',
+    assignedPerson: 'DevOps Uzmanı',
     status: 'Yapılacak',
+    type: 'Operasyon',
     priority: 'Orta',
     deadline: new Date(2025, 0, 20), // 20 Ocak 2025
     createdAt: Timestamp.now()
@@ -40,7 +46,9 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-3',
     title: 'UI/UX tasarım revizyonu',
     description: 'Kullanıcı deneyimi iyileştirmeleri',
+    assignedPerson: 'Tasarım Ekibi',
     status: 'Yapılıyor',
+    type: 'Takip',
     priority: 'Orta',
     deadline: new Date(2025, 0, 18), // 18 Ocak 2025
     createdAt: Timestamp.now()
@@ -50,7 +58,9 @@ const SAMPLE_TASKS: Task[] = [
     projectId: 'project-2',
     title: 'Güvenlik testi ve penetrasyon',
     description: 'OWASP standartları kontrolü',
+    assignedPerson: 'Güvenlik Uzmanı',
     status: 'Blocked',
+    type: 'Operasyon',
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 12), // 12 Ocak 2025
     createdAt: Timestamp.now()

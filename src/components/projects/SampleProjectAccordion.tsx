@@ -35,6 +35,8 @@ const SAMPLE_TASKS: Task[] = [
     title: 'Ödeme sistemi entegrasyonu',
     description: 'PayU ve iyzico entegrasyonu',
     status: 'Yapılıyor',
+    assignedPerson: "",
+    type: "Operasyon",
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 15),
     createdAt: Timestamp.now()
@@ -45,6 +47,8 @@ const SAMPLE_TASKS: Task[] = [
     title: 'Ürün kataloğu API',
     description: 'REST API geliştirme',
     status: 'Yapıldı',
+    assignedPerson: "",
+    type: "Operasyon",
     priority: 'Orta',
     deadline: new Date(2025, 0, 10),
     createdAt: Timestamp.now()
@@ -55,6 +59,8 @@ const SAMPLE_TASKS: Task[] = [
     title: 'Kullanıcı yönetimi',
     description: 'Kayıt ve giriş sistemi',
     status: 'Beklemede',
+    assignedPerson: "",
+    type: "Operasyon",
     priority: 'Orta',
     deadline: new Date(2025, 0, 20),
     createdAt: Timestamp.now()
@@ -66,6 +72,8 @@ const SAMPLE_TASKS: Task[] = [
     title: 'React Native kurulumu',
     description: 'Proje altyapısı hazırlığı',
     status: 'Yapıldı',
+    assignedPerson: "",
+    type: "Operasyon",
     priority: 'Yüksek',
     deadline: new Date(2025, 0, 8),
     createdAt: Timestamp.now()
@@ -76,6 +84,8 @@ const SAMPLE_TASKS: Task[] = [
     title: 'Push notification servisi',
     description: 'Firebase FCM entegrasyonu',
     status: 'Blocked',
+    assignedPerson: "",
+    type: "Operasyon",
     priority: 'Orta',
     deadline: new Date(2025, 0, 25),
     createdAt: Timestamp.now()

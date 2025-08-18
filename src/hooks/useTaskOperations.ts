@@ -40,9 +40,11 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
     const taskData = {
       projectId,
       title: taskTitle.trim(),
-      status: TASK_DEFAULTS.STATUS,
-      priority: TASK_DEFAULTS.PRIORITY,
       description: TASK_DEFAULTS.DESCRIPTION,
+      assignedPerson: TASK_DEFAULTS.ASSIGNED_PERSON,
+      status: TASK_DEFAULTS.STATUS,
+      type: TASK_DEFAULTS.TYPE,
+      priority: TASK_DEFAULTS.PRIORITY,
       deadline: getDefaultDeadline()
     };
 

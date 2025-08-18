@@ -1,11 +1,13 @@
-import { Task, TaskStatus, TaskPriority } from '@/lib/types';
+import { Task, TaskStatus, TaskPriority, TaskType } from '@/lib/types';
 
 // Default task values
 export const TASK_DEFAULTS = {
   STATUS: 'Yapılacak' as TaskStatus,
+  TYPE: 'Operasyon' as TaskType,
   PRIORITY: 'Orta' as TaskPriority,
   DEADLINE_DAYS: 7,
-  DESCRIPTION: ''
+  DESCRIPTION: '',
+  ASSIGNED_PERSON: ''
 } as const;
 
 // UI Messages for task operations

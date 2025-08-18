@@ -43,7 +43,9 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     projectId: data.projectId,
     title: data.title,
     description: data.description,
+    assignedPerson: data.assignedPerson || '',
     status: data.status,
+    type: data.type || 'Operasyon',
     priority: data.priority,
     deadline: data.deadline.toDate(),
     createdAt: data.createdAt
@@ -154,7 +156,9 @@ export async function createTask(data: CreateTaskData): Promise<string> {
       projectId: data.projectId,
       title: data.title,
       description: data.description || '',
+      assignedPerson: data.assignedPerson || '',
       status: data.status || 'Yapılacak',
+      type: data.type || 'Operasyon',
       priority: data.priority || 'Orta',
       deadline: data.deadline ? Timestamp.fromDate(data.deadline) : Timestamp.now(),
       createdAt: Timestamp.now()
