@@ -33,7 +33,9 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     projectId: data.projectId,
     title: data.title,
     description: data.description,
+    assignedPerson: data.assignedPerson || '',
     status: data.status,
+    type: data.type || 'Operasyon',
     priority: data.priority,
     deadline: data.deadline.toDate(),
     createdAt: data.createdAt
@@ -173,7 +175,7 @@ export function useTasks(projectId: string): UseTasksReturn {
               title: task.title,
               status: task.status,
               timestamp: new Date().toISOString()
-            });
+            } as Record<string, unknown>);
           });
 
           setTasks(tasksList);
@@ -184,7 +186,7 @@ export function useTasks(projectId: string): UseTasksReturn {
             count: tasksList.length,
             taskIds: tasksList.map(t => t.id),
             timestamp: new Date().toISOString()
-          });
+          } as Record<string, unknown>);
         },
         (error) => {
           logger.error('Tasks listener failed', { projectId, error });

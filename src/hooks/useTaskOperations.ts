@@ -25,7 +25,7 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
     const taskTitle = prompt(TASK_MESSAGES.CREATION_PROMPT);
     
     if (!taskTitle?.trim()) {
-      logger.debug('Task creation cancelled - empty title', { projectId });
+      logger.debug('Task creation cancelled - empty title', { projectId } as Record<string, unknown>);
       return;
     }
 
@@ -33,7 +33,7 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
       projectId, 
       taskTitle: taskTitle.trim(),
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
 
     setIsLoading(true);
     
@@ -56,11 +56,11 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
         ...taskData,
         id: tempTaskId
       });
-      logger.debug('Optimistic task added to UI', { tempTaskId, title: taskData.title });
+      logger.debug('Optimistic task added to UI', { tempTaskId, title: taskData.title } as Record<string, unknown>);
     }
     
     try {
-      logger.debug('Creating task with data', taskData);
+      logger.debug('Creating task with data', taskData as Record<string, unknown>);
       
       const createdTaskId = await createTask(taskData);
       
@@ -69,23 +69,23 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
         projectId,
         taskTitle: taskTitle.trim(),
         timestamp: new Date().toISOString()
-      });
+      } as Record<string, unknown>);
       
       // Optimistic task cleanup is now handled automatically by useFilteredTasks
       logger.debug('Real task created - optimistic cleanup will happen automatically', { 
         tempTaskId, 
         realTaskId: createdTaskId 
-      });
+      } as Record<string, unknown>);
       
       alert(TASK_MESSAGES.TASK_CREATED_SUCCESS(taskTitle));
     } catch (error) {
       // Remove optimistic task on error
       if (tempTaskId && removeOptimisticTask) {
         removeOptimisticTask(tempTaskId);
-        logger.debug('Optimistic task removed due to error', { tempTaskId });
+        logger.debug('Optimistic task removed due to error', { tempTaskId } as Record<string, unknown>);
       }
       
-      logger.error('Task creation failed in hook', { projectId, taskTitle, error });
+      logger.error('Task creation failed in hook', { projectId, taskTitle, error } as Record<string, unknown>);
       const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata';
       alert(TASK_MESSAGES.TASK_CREATION_ERROR(errorMessage));
     } finally {
@@ -104,7 +104,7 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
       await deleteTask(taskId);
       alert(TASK_MESSAGES.TASK_DELETED_SUCCESS);
     } catch (error) {
-      logger.error('Task deletion failed in hook', { taskId, taskTitle, error });
+      logger.error('Task deletion failed in hook', { taskId, taskTitle, error } as Record<string, unknown>);
       const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata';
       alert(TASK_MESSAGES.TASK_DELETION_ERROR(errorMessage));
     } finally {
@@ -118,10 +118,10 @@ export function useTaskOperations({ projectId, addOptimisticTask, removeOptimist
       task,
       onSuccess: () => {
         // Success callback - modal already closed and success alert shown
-        logger.debug('Task updated successfully via modal', { taskId: task.id });
+        logger.debug('Task updated successfully via modal', { taskId: task.id } as Record<string, unknown>);
       },
       onError: (error: string) => {
-        logger.error('Task update failed via modal', { taskId: task.id, error });
+        logger.error('Task update failed via modal', { taskId: task.id, error } as Record<string, unknown>);
       }
     });
   }, []);

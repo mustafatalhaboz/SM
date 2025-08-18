@@ -149,7 +149,7 @@ export async function createTask(data: CreateTaskData): Promise<string> {
     logger.debug('Firebase createTask started', {
       data,
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
 
     const tasksRef = collection(db, 'tasks');
     const taskData = {
@@ -171,7 +171,7 @@ export async function createTask(data: CreateTaskData): Promise<string> {
         createdAt: taskData.createdAt.toDate()
       },
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
     
     const docRef = await addDoc(tasksRef, taskData);
     
@@ -181,12 +181,12 @@ export async function createTask(data: CreateTaskData): Promise<string> {
       title: data.title,
       status: taskData.status,
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
     
     logger.firebaseOperation('createTask', true, { taskId: docRef.id, projectId: data.projectId });
     return docRef.id;
   } catch (error) {
-    logger.error('Firebase createTask failed', { data, error });
+    logger.error('Firebase createTask failed', { data, error } as Record<string, unknown>);
     logger.firebaseOperation('createTask', false, error);
     
     // More specific error messages

@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback } from 'react';
 import { Task } from '@/lib/types';
 import { useTasks } from './useFirestore';
 import { logger } from '@/lib/logger';
+import { Timestamp } from 'firebase/firestore';
 
 // Filtered tasks return interface
 export interface FilteredTasks {
@@ -41,7 +42,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       type: taskData.type || 'Operasyon',
       priority: taskData.priority || 'Orta',
       deadline: taskData.deadline || new Date(),
-      createdAt: { toMillis: () => Date.now() } as any // Mock Timestamp
+      createdAt: { toMillis: () => Date.now() } as unknown as Timestamp // Mock Timestamp
     };
     
     setOptimisticTasks(prev => [optimisticTask, ...prev]);
@@ -49,12 +50,12 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       taskId: optimisticTask.id, 
       projectId,
       title: optimisticTask.title 
-    });
+    } as Record<string, unknown>);
   }, [projectId]);
   
   const removeOptimisticTask = useCallback((tempId: string) => {
     setOptimisticTasks(prev => prev.filter(task => task.id !== tempId));
-    logger.debug('Optimistic task removed', { tempId, projectId } as any);
+    logger.debug('Optimistic task removed', { tempId, projectId } as Record<string, unknown>);
   }, [projectId]);
   
   // Combined tasks (real + optimistic) with duplicate cleanup
@@ -71,7 +72,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
           logger.debug('Removing duplicate optimistic task', { 
             optimisticId: optTask.id, 
             title: optTask.title 
-          });
+          } as Record<string, unknown>);
         }
         return !isDuplicate;
       });
@@ -97,7 +98,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       taskIds: combinedTasks.map(t => t.id),
       taskStatuses: combinedTasks.map(t => ({ id: t.id, status: t.status })),
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
 
     // Filter active vs completed tasks (using combined tasks)
     const activeTasks = combinedTasks.filter(task => task.status !== 'Yapıldı');
@@ -110,7 +111,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       completedTasks: completedTasks.length,
       completedTaskIds: completedTasks.map(t => t.id),
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
     
     // Sort active tasks by priority and deadline
     activeTasks.sort((a, b) => {
@@ -140,7 +141,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       projectId,
       result,
       timestamp: new Date().toISOString()
-    });
+    } as Record<string, unknown>);
     
     return result;
   }, [combinedTasks, projectId]);
