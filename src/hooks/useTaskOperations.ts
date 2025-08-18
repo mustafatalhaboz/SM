@@ -7,6 +7,8 @@ import { logger } from '@/lib/logger';
 
 interface UseTaskOperationsProps {
   projectId: string;
+  addOptimisticTask?: (task: Partial<Task>) => void;
+  removeOptimisticTask?: (tempId: string) => void;
 }
 
 interface UseTaskOperationsReturn {
@@ -16,37 +18,78 @@ interface UseTaskOperationsReturn {
   handleTaskClick: (task: Task) => void;
 }
 
-export function useTaskOperations({ projectId }: UseTaskOperationsProps): UseTaskOperationsReturn {
+export function useTaskOperations({ projectId, addOptimisticTask, removeOptimisticTask }: UseTaskOperationsProps): UseTaskOperationsReturn {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateTask = useCallback(async () => {
     const taskTitle = prompt(TASK_MESSAGES.CREATION_PROMPT);
     
     if (!taskTitle?.trim()) {
+      logger.debug('Task creation cancelled - empty title', { projectId });
       return;
     }
 
+    logger.debug('Task creation started', { 
+      projectId, 
+      taskTitle: taskTitle.trim(),
+      timestamp: new Date().toISOString()
+    });
+
     setIsLoading(true);
     
+    const taskData = {
+      projectId,
+      title: taskTitle.trim(),
+      status: TASK_DEFAULTS.STATUS,
+      priority: TASK_DEFAULTS.PRIORITY,
+      description: TASK_DEFAULTS.DESCRIPTION,
+      deadline: getDefaultDeadline()
+    };
+
+    // Optimistic update - immediately show task in UI
+    let tempTaskId: string | null = null;
+    if (addOptimisticTask) {
+      tempTaskId = `temp-${Date.now()}`;
+      addOptimisticTask({
+        ...taskData,
+        id: tempTaskId
+      });
+      logger.debug('Optimistic task added to UI', { tempTaskId, title: taskData.title });
+    }
+    
     try {
-      await createTask({
+      logger.debug('Creating task with data', taskData);
+      
+      const createdTaskId = await createTask(taskData);
+      
+      logger.debug('Task created successfully', { 
+        taskId: createdTaskId,
         projectId,
-        title: taskTitle.trim(),
-        status: TASK_DEFAULTS.STATUS,
-        priority: TASK_DEFAULTS.PRIORITY,
-        description: TASK_DEFAULTS.DESCRIPTION,
-        deadline: getDefaultDeadline()
+        taskTitle: taskTitle.trim(),
+        timestamp: new Date().toISOString()
+      });
+      
+      // Optimistic task cleanup is now handled automatically by useFilteredTasks
+      logger.debug('Real task created - optimistic cleanup will happen automatically', { 
+        tempTaskId, 
+        realTaskId: createdTaskId 
       });
       
       alert(TASK_MESSAGES.TASK_CREATED_SUCCESS(taskTitle));
     } catch (error) {
+      // Remove optimistic task on error
+      if (tempTaskId && removeOptimisticTask) {
+        removeOptimisticTask(tempTaskId);
+        logger.debug('Optimistic task removed due to error', { tempTaskId });
+      }
+      
       logger.error('Task creation failed in hook', { projectId, taskTitle, error });
       const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata';
       alert(TASK_MESSAGES.TASK_CREATION_ERROR(errorMessage));
     } finally {
       setIsLoading(false);
     }
-  }, [projectId]);
+  }, [projectId, addOptimisticTask, removeOptimisticTask]);
 
   const handleDeleteTask = useCallback(async (taskId: string, taskTitle: string) => {
     if (!confirm(TASK_MESSAGES.TASK_DELETE_CONFIRM(taskTitle))) {

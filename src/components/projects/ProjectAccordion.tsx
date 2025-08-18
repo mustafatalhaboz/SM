@@ -39,9 +39,15 @@ function ProjectItem({
     completedCount, 
     completionRate, 
     loading: tasksLoading, 
-    error: tasksError 
+    error: tasksError,
+    addOptimisticTask,
+    removeOptimisticTask
   } = useFilteredTasks(project.id);
-  const { handleCreateTask, handleDeleteTask, handleTaskClick } = useTaskOperations({ projectId: project.id });
+  const { handleCreateTask, handleDeleteTask, handleTaskClick } = useTaskOperations({ 
+    projectId: project.id,
+    addOptimisticTask,
+    removeOptimisticTask
+  });
   
   // Drag & drop states
   const isDraggedItem = dragDropState.draggedProject?.id === project.id;

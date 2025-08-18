@@ -144,6 +144,11 @@ export async function deleteProject(projectId: string): Promise<void> {
  */
 export async function createTask(data: CreateTaskData): Promise<string> {
   try {
+    logger.debug('Firebase createTask started', {
+      data,
+      timestamp: new Date().toISOString()
+    });
+
     const tasksRef = collection(db, 'tasks');
     const taskData = {
       projectId: data.projectId,
@@ -155,12 +160,45 @@ export async function createTask(data: CreateTaskData): Promise<string> {
       createdAt: Timestamp.now()
     };
     
+    logger.debug('Firebase taskData prepared', {
+      taskData: {
+        ...taskData,
+        deadline: taskData.deadline.toDate(),
+        createdAt: taskData.createdAt.toDate()
+      },
+      timestamp: new Date().toISOString()
+    });
+    
     const docRef = await addDoc(tasksRef, taskData);
+    
+    logger.debug('Firebase createTask completed', {
+      taskId: docRef.id,
+      projectId: data.projectId,
+      title: data.title,
+      status: taskData.status,
+      timestamp: new Date().toISOString()
+    });
+    
     logger.firebaseOperation('createTask', true, { taskId: docRef.id, projectId: data.projectId });
     return docRef.id;
   } catch (error) {
+    logger.error('Firebase createTask failed', { data, error });
     logger.firebaseOperation('createTask', false, error);
-    throw new Error('Failed to create task');
+    
+    // More specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('permission-denied')) {
+        throw new Error('Firebase izin hatası - lütfen bağlantınızı kontrol edin');
+      } else if (error.message.includes('network-request-failed')) {
+        throw new Error('Ağ bağlantısı hatası - internet bağlantınızı kontrol edin');
+      } else if (error.message.includes('quota-exceeded')) {
+        throw new Error('Firebase kotası doldu - lütfen yönetici ile iletişime geçin');
+      } else {
+        throw new Error(`Görev oluşturma hatası: ${error.message}`);
+      }
+    }
+    
+    throw new Error('Bilinmeyen hata - görev oluşturulamadı');
   }
 }
 

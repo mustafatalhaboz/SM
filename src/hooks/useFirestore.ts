@@ -165,13 +165,26 @@ export function useTasks(projectId: string): UseTasksReturn {
         (querySnapshot) => {
           const tasksList: Task[] = [];
           querySnapshot.forEach((doc) => {
-            tasksList.push(docToTask(doc));
+            const task = docToTask(doc);
+            tasksList.push(task);
+            logger.debug('Task received in listener', {
+              taskId: task.id,
+              projectId: task.projectId,
+              title: task.title,
+              status: task.status,
+              timestamp: new Date().toISOString()
+            });
           });
 
           setTasks(tasksList);
           setLoading(false);
           setError(null);
-          logger.debug('Tasks real-time update', { projectId, count: tasksList.length });
+          logger.debug('Tasks real-time update completed', { 
+            projectId, 
+            count: tasksList.length,
+            taskIds: tasksList.map(t => t.id),
+            timestamp: new Date().toISOString()
+          });
         },
         (error) => {
           logger.error('Tasks listener failed', { projectId, error });
