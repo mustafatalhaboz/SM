@@ -3,6 +3,7 @@
 import { useHighPriorityTasksWithProjects, useDateGroupedTasks } from '@/hooks';
 import { updateTask } from '@/lib/firebase-operations';
 import { logger } from '@/lib/logger';
+import { createTaskEditModal } from '@/components/tasks/TaskEditModal';
 import DateGroupAccordion from './DateGroupAccordion';
 
 // Note: TaskRow and badge components moved to DateGroupAccordion for reuse
@@ -49,6 +50,19 @@ export default function SummaryDashboard() {
     }
   };
 
+  // Handle task editing
+  const handleTaskEdit = (task: any) => {
+    createTaskEditModal({
+      task,
+      onSuccess: () => {
+        logger.debug('Task updated from dashboard', { taskId: task.id });
+      },
+      onError: (error) => {
+        logger.error('Failed to update task from dashboard', { taskId: task.id, error });
+      }
+    });
+  };
+
   if (loading) {
     return <LoadingState />;
   }
@@ -90,6 +104,7 @@ export default function SummaryDashboard() {
             key={group.key}
             group={group}
             onCompleteTask={handleCompleteTask}
+            onTaskEdit={handleTaskEdit}
           />
         ))}
       </div>

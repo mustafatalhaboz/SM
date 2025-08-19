@@ -58,16 +58,20 @@ function StatusBadge({ status }: { status: TaskWithProject['status'] }) {
 }
 
 // Task row component
-function TaskRow({ task, onCompleteTask }: { task: TaskWithProject; onCompleteTask: (taskId: string) => void }) {
+function TaskRow({ task, onCompleteTask, onTaskEdit }: { task: TaskWithProject; onCompleteTask: (taskId: string) => void; onTaskEdit: (task: TaskWithProject) => void }) {
   const isOverdue = task.deadline < new Date();
 
   const handleCompleteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     onCompleteTask(task.id);
   };
+
+  const handleTaskClick = () => {
+    onTaskEdit(task);
+  };
   
   return (
-    <div className="grid grid-cols-12 gap-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 px-3 py-3 transition-colors">
+    <div className="grid grid-cols-12 gap-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 px-3 py-3 transition-colors cursor-pointer" onClick={handleTaskClick}>
       {/* Proje - 2 columns */}
       <div className="col-span-2 sm:col-span-2 flex items-center">
         <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 truncate">
@@ -140,9 +144,10 @@ function TaskTableHeader() {
 interface DateGroupAccordionProps {
   group: DateGroup;
   onCompleteTask: (taskId: string) => void;
+  onTaskEdit: (task: TaskWithProject) => void;
 }
 
-export default function DateGroupAccordion({ group, onCompleteTask }: DateGroupAccordionProps) {
+export default function DateGroupAccordion({ group, onCompleteTask, onTaskEdit }: DateGroupAccordionProps) {
   const [isExpanded, setIsExpanded] = useState(group.isDefaultExpanded);
 
   // Color classes based on group type
@@ -216,7 +221,8 @@ export default function DateGroupAccordion({ group, onCompleteTask }: DateGroupA
               <TaskRow 
                 key={task.id} 
                 task={task} 
-                onCompleteTask={onCompleteTask} 
+                onCompleteTask={onCompleteTask}
+                onTaskEdit={onTaskEdit}
               />
             ))}
           </div>
