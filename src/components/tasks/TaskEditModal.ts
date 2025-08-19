@@ -1,4 +1,4 @@
-import { Task, UpdateTaskData, TaskStatus, TaskPriority, TASK_STATUS_OPTIONS, TASK_PRIORITY_OPTIONS } from '@/lib/types';
+import { Task, UpdateTaskData, TaskStatus, TaskPriority, TaskDuration, TASK_STATUS_OPTIONS, TASK_PRIORITY_OPTIONS, TASK_DURATION_OPTIONS } from '@/lib/types';
 import { updateTask } from '@/lib/firebase-operations';
 import { logger } from '@/lib/logger';
 
@@ -94,8 +94,8 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
             >${escapeHtml(task.description || '')}</textarea>
           </div>
 
-          <!-- Status, Priority, Deadline - Row -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Status, Priority, Duration, Deadline - Row -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Status -->
             <div>
               <label for="task-status" class="block text-sm font-medium text-gray-700 mb-1">
@@ -119,6 +119,19 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 ${createSelectOptions(TASK_PRIORITY_OPTIONS, task.priority)}
+              </select>
+            </div>
+
+            <!-- Duration -->
+            <div>
+              <label for="task-duration" class="block text-sm font-medium text-gray-700 mb-1">
+                Süre
+              </label>
+              <select 
+                id="task-duration"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                ${createSelectOptions(TASK_DURATION_OPTIONS, task.estimatedDuration)}
               </select>
             </div>
 
@@ -169,6 +182,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
   const descriptionInput = document.getElementById('task-description') as HTMLTextAreaElement;
   const statusSelect = document.getElementById('task-status') as HTMLSelectElement;
   const prioritySelect = document.getElementById('task-priority') as HTMLSelectElement;
+  const durationSelect = document.getElementById('task-duration') as HTMLSelectElement;
   const deadlineInput = document.getElementById('task-deadline') as HTMLInputElement;
   const saveButton = document.getElementById('save-button') as HTMLButtonElement;
   const saveText = document.getElementById('save-text')!;
@@ -296,6 +310,7 @@ export function createTaskEditModal({ task, onSuccess, onError }: TaskEditModalO
         description: descriptionInput.value.trim(),
         status: statusSelect.value as TaskStatus,
         priority: prioritySelect.value as TaskPriority,
+        estimatedDuration: durationSelect.value as TaskDuration,
         deadline: new Date(deadlineInput.value)
       };
 

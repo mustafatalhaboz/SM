@@ -47,6 +47,7 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     status: data.status,
     type: data.type || 'Operasyon',
     priority: data.priority,
+    estimatedDuration: data.estimatedDuration || 'Orta', // Default for migration
     deadline: data.deadline.toDate(),
     createdAt: data.createdAt
   };
@@ -160,6 +161,7 @@ export async function createTask(data: CreateTaskData): Promise<string> {
       status: data.status || 'Yapılacak',
       type: data.type || 'Operasyon',
       priority: data.priority || 'Orta',
+      estimatedDuration: data.estimatedDuration || 'Orta',
       deadline: data.deadline ? Timestamp.fromDate(data.deadline) : Timestamp.now(),
       createdAt: Timestamp.now()
     };

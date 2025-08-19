@@ -2,18 +2,19 @@ import { collection, getDocs, doc, updateDoc, Timestamp } from 'firebase/firesto
 import { db } from './firebase';
 import { logger } from './logger';
 
-let migrationRunning = false;
+let projectMigrationRunning = false;
+let taskMigrationRunning = false;
 
 /**
  * One-time migration to add order field to existing projects
  * Runs automatically when projects are loaded and order fields are missing
  */
 export async function migrateProjectOrder(): Promise<void> {
-  if (migrationRunning) {
+  if (projectMigrationRunning) {
     return;
   }
   
-  migrationRunning = true;
+  projectMigrationRunning = true;
   
   try {
     console.log('🔧 Checking for projects without order field...');
@@ -67,6 +68,60 @@ export async function migrateProjectOrder(): Promise<void> {
     console.error('❌ Migration failed:', error);
     logger.error('Project order migration failed', { error });
   } finally {
-    migrationRunning = false;
+    projectMigrationRunning = false;
+  }
+}
+
+/**
+ * One-time migration to add estimatedDuration field to existing tasks
+ * Runs automatically when tasks are loaded and duration fields are missing
+ */
+export async function migrateTaskDuration(): Promise<void> {
+  if (taskMigrationRunning) {
+    return;
+  }
+  
+  taskMigrationRunning = true;
+  
+  try {
+    console.log('🔧 Checking for tasks without estimatedDuration field...');
+    
+    const tasksRef = collection(db, 'tasks');
+    const snapshot = await getDocs(tasksRef);
+    
+    const tasksWithoutDuration: string[] = [];
+    
+    snapshot.forEach((document) => {
+      const data = document.data();
+      if (data.estimatedDuration === undefined) {
+        tasksWithoutDuration.push(document.id);
+      }
+    });
+    
+    if (tasksWithoutDuration.length === 0) {
+      console.log('✅ All tasks already have estimatedDuration field');
+      return;
+    }
+    
+    console.log(`🔄 Adding estimatedDuration field to ${tasksWithoutDuration.length} tasks...`);
+    
+    const updatePromises: Promise<void>[] = [];
+    
+    tasksWithoutDuration.forEach((taskId) => {
+      const taskRef = doc(db, 'tasks', taskId);
+      updatePromises.push(updateDoc(taskRef, { estimatedDuration: 'Orta' }));
+      console.log(`📝 Setting estimatedDuration 'Orta' for task ${taskId}`);
+    });
+    
+    await Promise.all(updatePromises);
+    
+    console.log('✅ Task duration migration completed successfully!');
+    logger.info('Task duration migration completed', { count: tasksWithoutDuration.length });
+    
+  } catch (error) {
+    console.error('❌ Task duration migration failed:', error);
+    logger.error('Task duration migration failed', { error });
+  } finally {
+    taskMigrationRunning = false;
   }
 }

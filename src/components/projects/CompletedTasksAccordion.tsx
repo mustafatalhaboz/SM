@@ -28,13 +28,19 @@ function CompletedTaskRow({
     onDeleteTask(task.id, task.title);
   };
 
+  const durationEmojis = {
+    'Kısa': '🟢',
+    'Orta': '🟡', 
+    'Uzun': '🔴'
+  };
+
   return (
     <div 
       className="grid grid-cols-12 gap-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 px-3 py-3 cursor-pointer transition-colors opacity-75"
       onClick={handleTaskClick}
     >
-      {/* Görev - 6 columns */}
-      <div className="col-span-6 flex items-center min-w-0">
+      {/* Görev - 5 columns */}
+      <div className="col-span-5 flex items-center min-w-0">
         <div className="flex items-center space-x-2">
           <span className="text-green-500 text-sm">✓</span>
           <h5 className="font-medium text-gray-600 text-sm truncate line-through">
@@ -47,6 +53,13 @@ function CompletedTaskRow({
       <div className="col-span-2 flex items-center justify-center">
         <span className="px-1.5 py-0.5 text-xs font-medium rounded-full border bg-gray-100 text-gray-500 border-gray-200">
           {task.priority}
+        </span>
+      </div>
+      
+      {/* Süre - 1 column */}
+      <div className="col-span-1 flex items-center justify-center">
+        <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-500" title={`${task.estimatedDuration} süre`}>
+          {durationEmojis[task.estimatedDuration]}
         </span>
       </div>
       
@@ -85,8 +98,9 @@ function CompletedTaskRow({
 function CompletedTasksTableHeader() {
   return (
     <div className="grid grid-cols-12 gap-2 bg-green-50 border-b border-green-200 text-xs font-medium text-green-700 px-3 py-2 rounded-t-lg">
-      <div className="col-span-6">Görev</div>
+      <div className="col-span-5">Görev</div>
       <div className="col-span-2 text-center">Öncelik</div>
+      <div className="col-span-1 text-center">Süre</div>
       <div className="col-span-2 text-center">Durum</div>
       <div className="col-span-2 text-center">Tarih</div>
     </div>

@@ -11,6 +11,9 @@ export type TaskPriority = 'Yüksek' | 'Orta' | 'Düşük';
 // Type options for tasks
 export type TaskType = 'Operasyon' | 'Yönlendirme' | 'Takip';
 
+// Duration options for tasks
+export type TaskDuration = 'Kısa' | 'Orta' | 'Uzun';
+
 // Project interface based on CLAUDE.md data model
 export interface Project {
   id: string;
@@ -29,6 +32,7 @@ export interface Task {
   status: TaskStatus;
   type: TaskType;
   priority: TaskPriority;
+  estimatedDuration: TaskDuration;
   deadline: Date;
   createdAt: Timestamp;
 }
@@ -59,6 +63,7 @@ export interface CreateTaskData {
   status?: TaskStatus;
   type?: TaskType;
   priority?: TaskPriority;
+  estimatedDuration?: TaskDuration;
   deadline?: Date;
 }
 
@@ -66,6 +71,7 @@ export interface CreateTaskData {
 export const DEFAULT_TASK_VALUES: Partial<CreateTaskData> = {
   status: 'Yapılacak',
   priority: 'Orta',
+  estimatedDuration: 'Orta',
   description: ''
 };
 
@@ -75,6 +81,7 @@ export interface UpdateTaskData {
   description?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
+  estimatedDuration?: TaskDuration;
   deadline?: Date;
 }
 
@@ -87,3 +94,4 @@ export type ProjectFormData = Omit<Project, 'id' | 'createdAt'>;
 // Arrays for dropdown options (for UI components)
 export const TASK_STATUS_OPTIONS: TaskStatus[] = ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'];
 export const TASK_PRIORITY_OPTIONS: TaskPriority[] = ['Yüksek', 'Orta', 'Düşük'];
+export const TASK_DURATION_OPTIONS: TaskDuration[] = ['Kısa', 'Orta', 'Uzun'];

@@ -14,8 +14,9 @@ interface ActiveTasksSectionProps {
 function ActiveTasksTableHeader() {
   return (
     <div className="grid grid-cols-12 gap-2 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 px-3 py-2 rounded-t-lg">
-      <div className="col-span-6">Görev</div>
+      <div className="col-span-5">Görev</div>
       <div className="col-span-2 text-center">Öncelik</div>
+      <div className="col-span-1 text-center">Süre</div>
       <div className="col-span-2 text-center">Durum</div>
       <div className="col-span-2 text-center">Tarih</div>
     </div>

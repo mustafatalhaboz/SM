@@ -19,6 +19,27 @@ function PriorityBadge({ priority }: { priority: TaskWithProject['priority'] }) 
   );
 }
 
+// Duration badge component
+function DurationBadge({ estimatedDuration }: { estimatedDuration: TaskWithProject['estimatedDuration'] }) {
+  const durationColors = {
+    'Kısa': 'bg-green-100 text-green-800',
+    'Orta': 'bg-yellow-100 text-yellow-800',
+    'Uzun': 'bg-red-100 text-red-800'
+  };
+
+  const durationEmojis = {
+    'Kısa': '🟢',
+    'Orta': '🟡',
+    'Uzun': '🔴'
+  };
+
+  return (
+    <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${durationColors[estimatedDuration]}`} title={`${estimatedDuration} süre`}>
+      {durationEmojis[estimatedDuration]}
+    </span>
+  );
+}
+
 // Status badge component
 function StatusBadge({ status }: { status: TaskWithProject['status'] }) {
   const colors = {
@@ -54,8 +75,8 @@ function TaskRow({ task, onCompleteTask }: { task: TaskWithProject; onCompleteTa
         </span>
       </div>
       
-      {/* Görev - 5 columns */}
-      <div className="col-span-5 flex items-center min-w-0">
+      {/* Görev - 4 columns */}
+      <div className="col-span-4 flex items-center min-w-0">
         <h4 className="font-medium text-gray-900 text-sm truncate">
           {task.title}
         </h4>
@@ -64,6 +85,11 @@ function TaskRow({ task, onCompleteTask }: { task: TaskWithProject; onCompleteTa
       {/* Öncelik - 2 columns */}
       <div className="col-span-2 flex items-center justify-center">
         <PriorityBadge priority={task.priority} />
+      </div>
+      
+      {/* Süre - 1 column */}
+      <div className="col-span-1 flex items-center justify-center">
+        <DurationBadge estimatedDuration={task.estimatedDuration} />
       </div>
       
       {/* Durum - 1 column */}
@@ -101,8 +127,9 @@ function TaskTableHeader() {
   return (
     <div className="grid grid-cols-12 gap-2 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-500 px-3 py-2 rounded-t-lg">
       <div className="col-span-2">Proje</div>
-      <div className="col-span-5">Görev</div>
+      <div className="col-span-4">Görev</div>
       <div className="col-span-2 text-center">Öncelik</div>
+      <div className="col-span-1 text-center">Süre</div>
       <div className="col-span-1 text-center">Durum</div>
       <div className="col-span-2 text-center">Tarih</div>
     </div>

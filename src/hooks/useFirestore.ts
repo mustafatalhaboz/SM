@@ -12,7 +12,7 @@ import {
 import { db } from '../lib/firebase';
 import { Project, Task, TaskPriority, TaskWithProject } from '../lib/types';
 import { logger } from '../lib/logger';
-import { migrateProjectOrder } from '../lib/migration';
+import { migrateProjectOrder, migrateTaskDuration } from '../lib/migration';
 
 // Helper function to convert Firestore document to Project
 function docToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
@@ -37,6 +37,7 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     status: data.status,
     type: data.type || 'Operasyon',
     priority: data.priority,
+    estimatedDuration: data.estimatedDuration || 'Orta', // Default for migration
     deadline: data.deadline.toDate(),
     createdAt: data.createdAt
   };
@@ -239,6 +240,9 @@ export function useHighPriorityTasks(): UseHighPriorityTasksReturn {
         tasksRef,
         where('priority', 'in', ['Yüksek', 'Orta'])
       );
+
+      // Run migration for task duration
+      migrateTaskDuration();
 
       unsubscribe = onSnapshot(q,
         (querySnapshot) => {
