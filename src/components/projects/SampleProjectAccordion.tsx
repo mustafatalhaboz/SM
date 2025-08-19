@@ -38,6 +38,7 @@ const SAMPLE_TASKS: Task[] = [
     assignedPerson: "",
     type: "Operasyon",
     priority: 'Yüksek',
+    estimatedDuration: 'Orta',
     deadline: new Date(2025, 0, 15),
     createdAt: Timestamp.now()
   },
@@ -50,6 +51,7 @@ const SAMPLE_TASKS: Task[] = [
     assignedPerson: "",
     type: "Operasyon",
     priority: 'Orta',
+    estimatedDuration: 'Uzun',
     deadline: new Date(2025, 0, 10),
     createdAt: Timestamp.now()
   },
@@ -62,6 +64,7 @@ const SAMPLE_TASKS: Task[] = [
     assignedPerson: "",
     type: "Operasyon",
     priority: 'Orta',
+    estimatedDuration: 'Orta',
     deadline: new Date(2025, 0, 20),
     createdAt: Timestamp.now()
   },
@@ -75,6 +78,7 @@ const SAMPLE_TASKS: Task[] = [
     assignedPerson: "",
     type: "Operasyon",
     priority: 'Yüksek',
+    estimatedDuration: 'Kısa',
     deadline: new Date(2025, 0, 8),
     createdAt: Timestamp.now()
   },
@@ -87,6 +91,7 @@ const SAMPLE_TASKS: Task[] = [
     assignedPerson: "",
     type: "Operasyon",
     priority: 'Orta',
+    estimatedDuration: 'Orta',
     deadline: new Date(2025, 0, 25),
     createdAt: Timestamp.now()
   }
