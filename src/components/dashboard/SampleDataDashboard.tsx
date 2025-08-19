@@ -14,6 +14,7 @@ const SAMPLE_TASKS: Task[] = [
     status: 'Yapılıyor',
     type: 'Operasyon',
     priority: 'Yüksek',
+    estimatedDuration: 'Uzun',
     deadline: new Date(2025, 0, 15), // 15 Ocak 2025
     createdAt: Timestamp.now()
   },
@@ -26,6 +27,7 @@ const SAMPLE_TASKS: Task[] = [
     status: 'Beklemede',
     type: 'Yönlendirme',
     priority: 'Yüksek',
+    estimatedDuration: 'Orta',
     deadline: new Date(2025, 0, 8), // 8 Ocak 2025 (geçmiş)
     createdAt: Timestamp.now()
   },
@@ -38,6 +40,7 @@ const SAMPLE_TASKS: Task[] = [
     status: 'Yapılacak',
     type: 'Operasyon',
     priority: 'Orta',
+    estimatedDuration: 'Orta',
     deadline: new Date(2025, 0, 20), // 20 Ocak 2025
     createdAt: Timestamp.now()
   },
@@ -50,6 +53,7 @@ const SAMPLE_TASKS: Task[] = [
     status: 'Yapılıyor',
     type: 'Takip',
     priority: 'Orta',
+    estimatedDuration: 'Kısa',
     deadline: new Date(2025, 0, 18), // 18 Ocak 2025
     createdAt: Timestamp.now()
   },
@@ -62,6 +66,7 @@ const SAMPLE_TASKS: Task[] = [
     status: 'Blocked',
     type: 'Operasyon',
     priority: 'Yüksek',
+    estimatedDuration: 'Uzun',
     deadline: new Date(2025, 0, 12), // 12 Ocak 2025
     createdAt: Timestamp.now()
   }
