@@ -56,7 +56,11 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
       
       {/* Süre - 1 column */}
       <div className="col-span-1 flex items-center justify-center">
-        <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-700">
+        <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+          task.estimatedDuration === 'Kısa' ? 'bg-blue-50 text-blue-700' :
+          task.estimatedDuration === 'Orta' ? 'bg-gray-100 text-gray-700' :
+          'bg-orange-50 text-orange-700'
+        }`}>
           {task.estimatedDuration}
         </span>
       </div>

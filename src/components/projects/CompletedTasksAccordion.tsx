@@ -53,7 +53,11 @@ function CompletedTaskRow({
       
       {/* Süre - 1 column */}
       <div className="col-span-1 flex items-center justify-center">
-        <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-500">
+        <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+          task.estimatedDuration === 'Kısa' ? 'bg-blue-50 text-blue-600' :
+          task.estimatedDuration === 'Orta' ? 'bg-gray-100 text-gray-600' :
+          'bg-orange-50 text-orange-600'
+        }`}>
           {task.estimatedDuration}
         </span>
       </div>

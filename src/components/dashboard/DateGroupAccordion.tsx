@@ -21,8 +21,21 @@ function PriorityBadge({ priority }: { priority: TaskWithProject['priority'] }) 
 
 // Duration badge component
 function DurationBadge({ estimatedDuration }: { estimatedDuration: TaskWithProject['estimatedDuration'] }) {
+  const getDurationStyles = () => {
+    switch (estimatedDuration) {
+      case 'Kısa':
+        return 'bg-blue-50 text-blue-700';
+      case 'Orta':
+        return 'bg-gray-100 text-gray-700';
+      case 'Uzun':
+        return 'bg-orange-50 text-orange-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   return (
-    <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-700">
+    <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${getDurationStyles()}`}>
       {estimatedDuration}
     </span>
   );
