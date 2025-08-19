@@ -44,7 +44,22 @@ export default function SummaryDashboard() {
   // Handle task completion
   const handleCompleteTask = async (taskId: string) => {
     try {
-      await updateTask(taskId, { status: 'Yapıldı' });
+      // Find the task from our current tasks to get all data
+      const taskToComplete = tasks.find(task => task.id === taskId);
+      if (!taskToComplete) {
+        throw new Error('Task not found in current data');
+      }
+      
+      // Update with full task data (Firebase rules requirement)
+      await updateTask(taskId, {
+        title: taskToComplete.title,
+        description: taskToComplete.description,
+        status: 'Yapıldı',
+        priority: taskToComplete.priority,
+        estimatedDuration: taskToComplete.estimatedDuration,
+        deadline: taskToComplete.deadline
+      });
+      
       logger.debug('Task marked as completed from dashboard', { taskId });
     } catch (error) {
       logger.error('Failed to complete task from dashboard', { taskId, error });
