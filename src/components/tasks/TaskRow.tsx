@@ -25,17 +25,6 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
     'Düşük': 'bg-green-100 text-green-800 border-green-200'
   };
 
-  const durationColors = {
-    'Kısa': 'bg-green-100 text-green-800',
-    'Orta': 'bg-yellow-100 text-yellow-800',
-    'Uzun': 'bg-red-100 text-red-800'
-  };
-
-  const durationEmojis = {
-    'Kısa': '🟢',
-    'Orta': '🟡',
-    'Uzun': '🔴'
-  };
 
   const handleTaskClick = () => {
     onTaskClick(task);
@@ -67,8 +56,8 @@ export default function TaskRow({ task, onTaskClick, onDeleteTask }: TaskRowProp
       
       {/* Süre - 1 column */}
       <div className="col-span-1 flex items-center justify-center">
-        <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${durationColors[task.estimatedDuration]}`} title={`${task.estimatedDuration} süre`}>
-          {durationEmojis[task.estimatedDuration]}
+        <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-700">
+          {task.estimatedDuration}
         </span>
       </div>
       

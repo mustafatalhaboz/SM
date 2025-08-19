@@ -28,11 +28,6 @@ function CompletedTaskRow({
     onDeleteTask(task.id, task.title);
   };
 
-  const durationEmojis = {
-    'Kısa': '🟢',
-    'Orta': '🟡', 
-    'Uzun': '🔴'
-  };
 
   return (
     <div 
@@ -58,8 +53,8 @@ function CompletedTaskRow({
       
       {/* Süre - 1 column */}
       <div className="col-span-1 flex items-center justify-center">
-        <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-500" title={`${task.estimatedDuration} süre`}>
-          {durationEmojis[task.estimatedDuration]}
+        <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-500">
+          {task.estimatedDuration}
         </span>
       </div>
       

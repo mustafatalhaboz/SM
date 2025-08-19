@@ -21,21 +21,9 @@ function PriorityBadge({ priority }: { priority: TaskWithProject['priority'] }) 
 
 // Duration badge component
 function DurationBadge({ estimatedDuration }: { estimatedDuration: TaskWithProject['estimatedDuration'] }) {
-  const durationColors = {
-    'Kısa': 'bg-green-100 text-green-800',
-    'Orta': 'bg-yellow-100 text-yellow-800',
-    'Uzun': 'bg-red-100 text-red-800'
-  };
-
-  const durationEmojis = {
-    'Kısa': '🟢',
-    'Orta': '🟡',
-    'Uzun': '🔴'
-  };
-
   return (
-    <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${durationColors[estimatedDuration]}`} title={`${estimatedDuration} süre`}>
-      {durationEmojis[estimatedDuration]}
+    <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-700">
+      {estimatedDuration}
     </span>
   );
 }
