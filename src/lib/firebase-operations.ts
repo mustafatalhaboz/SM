@@ -215,6 +215,8 @@ export async function createTask(data: CreateTaskData): Promise<string> {
  */
 export async function updateTask(taskId: string, data: UpdateTaskData): Promise<void> {
   try {
+    console.log('🔄 UpdateTask starting:', { taskId, data });
+    
     const taskRef = doc(db, 'tasks', taskId);
     const updateData: Partial<DocumentData> = { ...data };
     
@@ -223,11 +225,29 @@ export async function updateTask(taskId: string, data: UpdateTaskData): Promise<
       updateData.deadline = Timestamp.fromDate(data.deadline);
     }
     
+    console.log('📝 Update data prepared:', updateData);
+    
     await updateDoc(taskRef, updateData);
+    console.log('✅ UpdateTask successful');
     logger.firebaseOperation('updateTask', true, { taskId });
   } catch (error) {
+    console.error('❌ UpdateTask failed:', error);
     logger.firebaseOperation('updateTask', false, error);
-    throw new Error('Failed to update task');
+    
+    // More specific error handling
+    if (error instanceof Error) {
+      if (error.message.includes('permission-denied') || error.message.includes('insufficient permissions')) {
+        throw new Error('Firebase izin hatası - lütfen Firebase Console\'dan Firestore Rules\'ları kontrol edin');
+      } else if (error.message.includes('not-found')) {
+        throw new Error('Görev bulunamadı - görev silinmiş olabilir');
+      } else if (error.message.includes('invalid-argument')) {
+        throw new Error('Geçersiz veri formatı - lütfen tüm alanları kontrol edin');
+      } else {
+        throw new Error(`Görev güncelleme hatası: ${error.message}`);
+      }
+    }
+    
+    throw new Error('Bilinmeyen hata - görev güncellenemedi');
   }
 }
 
