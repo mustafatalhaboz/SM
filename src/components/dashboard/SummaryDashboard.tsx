@@ -4,6 +4,7 @@ import { useHighPriorityTasksWithProjects, useDateGroupedTasks } from '@/hooks';
 import { updateTask } from '@/lib/firebase-operations';
 import { logger } from '@/lib/logger';
 import { createTaskEditModal } from '@/components/tasks/TaskEditModal';
+import { TaskWithProject } from '@/lib/types';
 import DateGroupAccordion from './DateGroupAccordion';
 
 // Note: TaskRow and badge components moved to DateGroupAccordion for reuse
@@ -51,7 +52,7 @@ export default function SummaryDashboard() {
   };
 
   // Handle task editing
-  const handleTaskEdit = (task: any) => {
+  const handleTaskEdit = (task: TaskWithProject) => {
     createTaskEditModal({
       task,
       onSuccess: () => {
