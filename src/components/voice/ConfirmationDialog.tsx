@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { ConfirmationDialogProps } from '@/types/voice';
+import { useTaskAgent } from '@/hooks/useTaskAgent';
+import { useProjects, useHighPriorityTasksWithProjects } from '@/hooks/useFirestore';
+import { TaskDisambiguationModal } from './TaskDisambiguationModal';
 
 /**
  * Dialog component for confirming and editing voice transcript
@@ -16,6 +19,48 @@ export function ConfirmationDialog({
 }: ConfirmationDialogProps) {
   
   const [editedText, setEditedText] = useState(transcript);
+  const { projects, loading: projectsLoading } = useProjects();
+  const { tasks: allTasks, loading: tasksLoading } = useHighPriorityTasksWithProjects();
+  
+  const taskAgent = useTaskAgent({
+    onSuccess: (result) => {
+      if (result.success) {
+        let successMessage = '';
+        
+        switch (result.commandType) {
+          case 'CREATE':
+            if (result.taskData) {
+              successMessage = `✅ Görev oluşturuldu!\n\nProje: ${result.taskData.projectName}\nBaşlık: ${result.taskData.title}\n\nGüven: ${Math.round(result.taskData.confidence * 100)}%`;
+            }
+            break;
+            
+          case 'UPDATE':
+            if (result.updatedTask) {
+              const updatedFields = Object.keys(result.updatedTask.updatedFields);
+              successMessage = `🔄 Görev güncellendi!\n\nProje: ${result.updatedTask.projectName}\nGörev: ${result.updatedTask.taskTitle}\n\nGüncellenen alanlar: ${updatedFields.join(', ')}`;
+            }
+            break;
+            
+          case 'COMPLETE':
+            if (result.completedTask) {
+              successMessage = `✅ Görev tamamlandı!\n\nProje: ${result.completedTask.projectName}\nGörev: ${result.completedTask.taskTitle}`;
+            }
+            break;
+        }
+        
+        if (successMessage) {
+          alert(successMessage);
+          onConfirm(); // Close dialog after successful operation
+        }
+      } else if (result.needsUserConfirmation) {
+        // Confirmation flow is handled by rendering TaskDisambiguationModal
+        // No action needed here, just let the modal render
+      }
+    },
+    onError: (error) => {
+      console.error('Task agent error:', error);
+    }
+  });
 
   // Update local state when transcript changes
   useEffect(() => {
@@ -34,6 +79,32 @@ export function ConfirmationDialog({
   const handleConfirm = () => {
     if (editedText.trim()) {
       onConfirm();
+    }
+  };
+
+  const handleExecuteCommand = async () => {
+    if (!editedText.trim()) {
+      alert('⚠️ Metin boş - lütfen bir şeyler yazın');
+      return;
+    }
+
+    if (projectsLoading || tasksLoading) {
+      alert('⏳ Veriler yükleniyor - lütfen bekleyin');
+      return;
+    }
+
+    if (projects.length === 0) {
+      alert('❌ Hiç proje bulunamadı - önce bir proje oluşturun');
+      return;
+    }
+
+    // Prepare project list for AI
+    const projectList = projects.map(p => ({ id: p.id, name: p.name }));
+    
+    try {
+      await taskAgent.actions.analyzeAndExecuteCommand(editedText.trim(), projectList, allTasks);
+    } catch (error) {
+      console.error('Command execution failed:', error);
     }
   };
 
@@ -110,6 +181,37 @@ export function ConfirmationDialog({
             </div>
           </div>
 
+          {/* Agent Error Display */}
+          {taskAgent.state.error && (
+            <div className="border-t border-gray-200 px-6 py-3 bg-red-50">
+              <div className="flex items-start space-x-2">
+                <svg className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-red-800">
+                    AI Görev Oluşturma Hatası
+                  </p>
+                  <p className="text-sm text-red-700 mt-1">
+                    {taskAgent.state.error.message}
+                  </p>
+                  {taskAgent.state.error.recoverable && (
+                    <button
+                      onClick={taskAgent.actions.retryLastAnalysis}
+                      disabled={taskAgent.state.status === 'analyzing'}
+                      className="
+                        mt-2 text-sm text-red-800 hover:text-red-900 
+                        underline disabled:opacity-50
+                      "
+                    >
+                      Tekrar Dene
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
           <div className="border-t border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between space-x-3">
@@ -145,6 +247,42 @@ export function ConfirmationDialog({
                   İptal
                 </button>
                 <button
+                  onClick={handleExecuteCommand}
+                  disabled={
+                    !editedText.trim() || 
+                    projectsLoading || 
+                    tasksLoading ||
+                    taskAgent.state.status === 'analyzing' || 
+                    taskAgent.state.status === 'creating'
+                  }
+                  className="
+                    px-4 py-2 text-sm font-medium text-white 
+                    bg-green-600 border border-transparent rounded-md
+                    hover:bg-green-700 focus:outline-none focus:ring-2 
+                    focus:ring-offset-2 focus:ring-green-500
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    transition-colors flex items-center space-x-1
+                  "
+                >
+                  {taskAgent.state.status === 'analyzing' && (
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  )}
+                  {taskAgent.state.status === 'creating' && (
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  )}
+                  <span>
+                    {taskAgent.state.status === 'analyzing' ? 'AI Analiz Ediyor...' :
+                     taskAgent.state.status === 'creating' ? 'İşlem Yapılıyor...' :
+                     '🤖 Komut Çalıştır'}
+                  </span>
+                </button>
+                <button
                   onClick={handleConfirm}
                   disabled={!editedText.trim()}
                   className="
@@ -163,6 +301,24 @@ export function ConfirmationDialog({
           </div>
         </div>
       </div>
+      
+      {/* Task Disambiguation Modal */}
+      <TaskDisambiguationModal
+        isOpen={taskAgent.state.result?.needsUserConfirmation === true}
+        confirmationData={taskAgent.state.result?.confirmationData || null}
+        onConfirm={(selectedTask) => {
+          taskAgent.actions.confirmTaskMatch(selectedTask);
+        }}
+        onReject={() => {
+          taskAgent.actions.rejectAndDisambiguate();
+        }}
+        onCreateNew={() => {
+          taskAgent.actions.createNewTask();
+        }}
+        onCancel={() => {
+          taskAgent.actions.reset();
+        }}
+      />
     </div>
   );
 }
