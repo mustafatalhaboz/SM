@@ -1,6 +1,6 @@
 'use client';
 
-import { Task } from '@/lib/types';
+import { Task, getTotalDurationMinutes, formatDurationDisplay } from '@/lib/types';
 import { TaskRow } from '@/components/tasks';
 
 interface ActiveTasksSectionProps {
@@ -56,6 +56,10 @@ export default function ActiveTasksSection({
     return <ActiveTasksLoadingState />;
   }
 
+  // Calculate total estimated duration
+  const totalMinutes = getTotalDurationMinutes(tasks);
+  const totalDurationDisplay = formatDurationDisplay(totalMinutes);
+
   return (
     <div className="mb-4">
       {/* Section Header */}
@@ -64,9 +68,16 @@ export default function ActiveTasksSection({
           <span className="mr-2">📋</span>
           Aktif Görevler
         </h4>
-        <span className="text-xs text-gray-500 bg-blue-50 px-2 py-1 rounded-full">
-          {tasks.length} görev
-        </span>
+        <div className="flex items-center space-x-2">
+          <span className="text-xs text-gray-500 bg-blue-50 px-2 py-1 rounded-full">
+            {tasks.length} görev
+          </span>
+          {tasks.length > 0 && (
+            <span className="text-xs text-gray-500 bg-purple-50 px-2 py-1 rounded-full">
+              ~{totalDurationDisplay}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Tasks Content */}

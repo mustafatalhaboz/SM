@@ -73,7 +73,7 @@ CREATE komutu için:
   "assignedPerson": "Atanan kişi", 
   "priority": "Yüksek|Orta|Düşük",
   "type": "Operasyon|Yönlendirme|Takip",
-  "estimatedDuration": "Kısa|Orta|Uzun",
+  "estimatedDuration": "15dk|30dk|1saat|1.5saat|2saat",
   "deadline": "Tarih (YYYY-MM-DD)",
   "confidence": 0.95
 }

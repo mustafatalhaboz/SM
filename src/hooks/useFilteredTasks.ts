@@ -41,7 +41,7 @@ export function useFilteredTasks(projectId: string): UseFilteredTasksReturn {
       status: taskData.status || 'Yapılacak',
       type: taskData.type || 'Operasyon',
       priority: taskData.priority || 'Orta',
-      estimatedDuration: taskData.estimatedDuration || 'Orta',
+      estimatedDuration: taskData.estimatedDuration || '30dk',
       deadline: taskData.deadline || new Date(),
       createdAt: { toMillis: () => Date.now() } as unknown as Timestamp // Mock Timestamp
     };

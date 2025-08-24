@@ -54,9 +54,29 @@ function CompletedTaskRow({
       {/* Süre - 1 column */}
       <div className="col-span-1 flex items-center justify-center">
         <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
-          task.estimatedDuration === 'Kısa' ? 'bg-blue-50 text-blue-600' :
-          task.estimatedDuration === 'Orta' ? 'bg-gray-100 text-gray-600' :
-          'bg-orange-50 text-orange-600'
+          (() => {
+            // Handle new time-based values
+            if (task.estimatedDuration === '15dk' || task.estimatedDuration === '30dk') {
+              return 'bg-green-50 text-green-600';
+            } else if (task.estimatedDuration === '1saat') {
+              return 'bg-yellow-50 text-yellow-600';
+            } else if (task.estimatedDuration === '1.5saat' || task.estimatedDuration === '2saat') {
+              return 'bg-red-50 text-red-600';
+            }
+            
+            // Fallback for old values during migration (type-safe approach)
+            const duration = task.estimatedDuration as string;
+            if (duration === 'Kısa') {
+              return 'bg-green-50 text-green-600';
+            } else if (duration === 'Orta') {
+              return 'bg-yellow-50 text-yellow-600';
+            } else if (duration === 'Uzun') {
+              return 'bg-red-50 text-red-600';
+            }
+            
+            // Default fallback
+            return 'bg-gray-100 text-gray-600';
+          })()
         }`}>
           {task.estimatedDuration}
         </span>

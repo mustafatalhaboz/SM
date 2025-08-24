@@ -4,7 +4,7 @@ import { useHighPriorityTasksWithProjects, useDateGroupedTasks } from '@/hooks';
 import { updateTask } from '@/lib/firebase-operations';
 import { logger } from '@/lib/logger';
 import { createTaskEditModal } from '@/components/tasks/TaskEditModal';
-import { TaskWithProject } from '@/lib/types';
+import { TaskWithProject, getTotalDurationMinutes, formatDurationDisplay } from '@/lib/types';
 import DateGroupAccordion from './DateGroupAccordion';
 
 // Note: TaskRow and badge components moved to DateGroupAccordion for reuse
@@ -101,6 +101,10 @@ export default function SummaryDashboard() {
     return <EmptyState />;
   }
 
+  // Calculate total estimated duration for all high-priority tasks
+  const totalMinutes = getTotalDurationMinutes(tasks);
+  const totalDurationDisplay = formatDurationDisplay(totalMinutes);
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -108,9 +112,16 @@ export default function SummaryDashboard() {
         <h2 className="text-lg font-semibold text-gray-900">
           Yüksek Öncelikli Görevler
         </h2>
-        <span className="text-sm text-gray-500">
-          {totalTasks} görev
-        </span>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-500">
+            {totalTasks} görev
+          </span>
+          {totalTasks > 0 && (
+            <span className="text-sm text-gray-500 bg-purple-50 px-2 py-1 rounded-full">
+              ~{totalDurationDisplay}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Date-based Accordion Groups */}

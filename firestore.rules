@@ -46,9 +46,9 @@ service cloud.firestore {
         resource == null &&
         request.resource.data.keys().hasAll([
           'projectId', 'title', 'description', 'assignedPerson',
-          'status', 'type', 'priority', 'deadline', 'createdAt'
+          'status', 'type', 'priority', 'estimatedDuration', 'deadline', 'createdAt'
         ]) &&
-        request.resource.data.size() == 9 &&
+        request.resource.data.size() == 10 &&
         
         // Field type and size validations
         request.resource.data.projectId is string &&
@@ -67,6 +67,7 @@ service cloud.firestore {
         request.resource.data.status in ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'] &&
         request.resource.data.type in ['Operasyon', 'Yönlendirme', 'Takip'] &&
         request.resource.data.priority in ['Yüksek', 'Orta', 'Düşük'] &&
+        request.resource.data.estimatedDuration in ['15dk', '30dk', '1saat', '1.5saat', '2saat'] &&
         
         request.resource.data.deadline is timestamp &&
         request.resource.data.createdAt is timestamp
@@ -76,9 +77,9 @@ service cloud.firestore {
       allow update: if request.auth != null || (
         request.resource.data.keys().hasAll([
           'projectId', 'title', 'description', 'assignedPerson',
-          'status', 'type', 'priority', 'deadline', 'createdAt'
+          'status', 'type', 'priority', 'estimatedDuration', 'deadline', 'createdAt'
         ]) &&
-        request.resource.data.size() == 9 &&
+        request.resource.data.size() == 10 &&
         
         // Field validations
         request.resource.data.projectId == resource.data.projectId &&
@@ -97,6 +98,7 @@ service cloud.firestore {
         request.resource.data.status in ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'] &&
         request.resource.data.type in ['Operasyon', 'Yönlendirme', 'Takip'] &&
         request.resource.data.priority in ['Yüksek', 'Orta', 'Düşük'] &&
+        request.resource.data.estimatedDuration in ['15dk', '30dk', '1saat', '1.5saat', '2saat'] &&
         
         request.resource.data.deadline is timestamp
       );

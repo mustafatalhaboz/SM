@@ -109,8 +109,8 @@ export async function migrateTaskDuration(): Promise<void> {
     
     tasksWithoutDuration.forEach((taskId) => {
       const taskRef = doc(db, 'tasks', taskId);
-      updatePromises.push(updateDoc(taskRef, { estimatedDuration: 'Orta' }));
-      console.log(`📝 Setting estimatedDuration 'Orta' for task ${taskId}`);
+      updatePromises.push(updateDoc(taskRef, { estimatedDuration: '30dk' }));
+      console.log(`📝 Setting estimatedDuration '30dk' for task ${taskId}`);
     });
     
     await Promise.all(updatePromises);

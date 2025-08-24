@@ -11,8 +11,8 @@ export type TaskPriority = 'Yüksek' | 'Orta' | 'Düşük';
 // Type options for tasks
 export type TaskType = 'Operasyon' | 'Yönlendirme' | 'Takip';
 
-// Duration options for tasks
-export type TaskDuration = 'Kısa' | 'Orta' | 'Uzun';
+// Duration options for tasks (time-based)
+export type TaskDuration = '15dk' | '30dk' | '1saat' | '1.5saat' | '2saat';
 
 // Project interface based on CLAUDE.md data model
 export interface Project {
@@ -71,7 +71,7 @@ export interface CreateTaskData {
 export const DEFAULT_TASK_VALUES: Partial<CreateTaskData> = {
   status: 'Yapılacak',
   priority: 'Orta',
-  estimatedDuration: 'Orta',
+  estimatedDuration: '30dk',
   description: ''
 };
 
@@ -94,4 +94,49 @@ export type ProjectFormData = Omit<Project, 'id' | 'createdAt'>;
 // Arrays for dropdown options (for UI components)
 export const TASK_STATUS_OPTIONS: TaskStatus[] = ['Yapılacak', 'Yapılıyor', 'Beklemede', 'Blocked', 'Yapıldı'];
 export const TASK_PRIORITY_OPTIONS: TaskPriority[] = ['Yüksek', 'Orta', 'Düşük'];
-export const TASK_DURATION_OPTIONS: TaskDuration[] = ['Kısa', 'Orta', 'Uzun'];
+export const TASK_DURATION_OPTIONS: TaskDuration[] = ['15dk', '30dk', '1saat', '1.5saat', '2saat'];
+
+// Duration utility functions for sorting and comparison
+export function getDurationInMinutes(duration: TaskDuration | string): number {
+  switch (duration) {
+    case '15dk': return 15;
+    case '30dk': return 30;
+    case '1saat': return 60;
+    case '1.5saat': return 90;
+    case '2saat': return 120;
+    // Fallback for old values during migration
+    case 'Kısa': return 30; // Equivalent to 30dk
+    case 'Orta': return 60; // Equivalent to 1saat  
+    case 'Uzun': return 120; // Equivalent to 2saat
+    default: return 60; // Default to 1 hour
+  }
+}
+
+// Task sorting functions
+export function sortTasksByDuration(tasks: Task[], ascending: boolean = true): Task[] {
+  return [...tasks].sort((a, b) => {
+    const durationA = getDurationInMinutes(a.estimatedDuration);
+    const durationB = getDurationInMinutes(b.estimatedDuration);
+    return ascending ? durationA - durationB : durationB - durationA;
+  });
+}
+
+// Duration aggregation functions
+export function getTotalDurationMinutes(tasks: Task[]): number {
+  return tasks.reduce((total, task) => total + getDurationInMinutes(task.estimatedDuration), 0);
+}
+
+export function formatDurationDisplay(minutes: number): string {
+  if (minutes < 60) {
+    return `${minutes}dk`;
+  } else if (minutes === 60) {
+    return '1saat';
+  } else if (minutes < 120) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return remainingMinutes > 0 ? `${hours}s ${remainingMinutes}dk` : `${hours}saat`;
+  } else {
+    const hours = minutes / 60;
+    return hours % 1 === 0 ? `${hours}saat` : `${hours.toFixed(1)}saat`;
+  }
+}

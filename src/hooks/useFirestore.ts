@@ -37,7 +37,7 @@ function docToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     status: data.status,
     type: data.type || 'Operasyon',
     priority: data.priority,
-    estimatedDuration: data.estimatedDuration || 'Orta', // Default for migration
+    estimatedDuration: data.estimatedDuration || '30dk', // Default for migration (30dk = Orta equivalent)
     deadline: data.deadline.toDate(),
     createdAt: data.createdAt
   };

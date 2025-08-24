@@ -126,7 +126,7 @@ async function processCreateCommand(
     status: validateTaskStatus(parsedResponse.status) || DEFAULT_TASK_VALUES.status || 'Yapılacak',
     type: validateTaskType(parsedResponse.type) || 'Operasyon',
     priority: validateTaskPriority(parsedResponse.priority) || DEFAULT_TASK_VALUES.priority || 'Orta',
-    estimatedDuration: validateTaskDuration(parsedResponse.estimatedDuration) || DEFAULT_TASK_VALUES.estimatedDuration || 'Orta',
+    estimatedDuration: validateTaskDuration(parsedResponse.estimatedDuration) || DEFAULT_TASK_VALUES.estimatedDuration || '30dk',
     deadline: processedDeadline,
     confidence: Math.max(0, Math.min(1, parsedResponse.confidence || 0.5))
   };

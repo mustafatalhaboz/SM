@@ -22,16 +22,27 @@ function PriorityBadge({ priority }: { priority: TaskWithProject['priority'] }) 
 // Duration badge component
 function DurationBadge({ estimatedDuration }: { estimatedDuration: TaskWithProject['estimatedDuration'] }) {
   const getDurationStyles = () => {
-    switch (estimatedDuration) {
-      case 'Kısa':
-        return 'bg-blue-50 text-blue-700';
-      case 'Orta':
-        return 'bg-gray-100 text-gray-700';
-      case 'Uzun':
-        return 'bg-orange-50 text-orange-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
+    // Handle new time-based values
+    if (estimatedDuration === '15dk' || estimatedDuration === '30dk') {
+      return 'bg-green-50 text-green-700';
+    } else if (estimatedDuration === '1saat') {
+      return 'bg-yellow-50 text-yellow-700';
+    } else if (estimatedDuration === '1.5saat' || estimatedDuration === '2saat') {
+      return 'bg-red-50 text-red-700';
     }
+    
+    // Fallback for old values during migration (type-safe approach)
+    const duration = estimatedDuration as string;
+    if (duration === 'Kısa') {
+      return 'bg-green-50 text-green-700';
+    } else if (duration === 'Orta') {
+      return 'bg-yellow-50 text-yellow-700';
+    } else if (duration === 'Uzun') {
+      return 'bg-red-50 text-red-700';
+    }
+    
+    // Default fallback
+    return 'bg-gray-100 text-gray-700';
   };
 
   return (
