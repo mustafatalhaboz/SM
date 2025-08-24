@@ -1,6 +1,6 @@
 {
   "name": "superm",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,12 @@
     "deploy": "./scripts/production-deploy.sh",
     "check-env": "node scripts/check-env.js",
     "build:analyze": "ANALYZE=true npm run build",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "preinstall": "npx only-allow npm"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "dependencies": {
     "firebase": "^12.1.0",
@@ -27,6 +32,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
+    "only-allow": "1.2.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

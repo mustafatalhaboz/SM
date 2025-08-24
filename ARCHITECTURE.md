@@ -1,7 +1,7 @@
 # SuperM Task Management - System Architecture
 
 ## Overview
-SuperM is a sophisticated AI-powered task management system built with modern web technologies, featuring voice-to-text task creation, intelligent fuzzy matching, and real-time collaboration capabilities.
+SuperM is a sophisticated AI-powered task management system built with modern web technologies, featuring voice-to-text task creation, time-based duration estimation, intelligent fuzzy matching, and real-time collaboration capabilities.
 
 ## System Architecture Diagram
 

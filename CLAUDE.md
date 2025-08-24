@@ -6,6 +6,9 @@
 ### Temel Özellikler
 - **Voice-to-Text Task Management**: Sesli komutlarla görev oluşturma ve düzenleme
 - **AI-Powered Task Matching**: Fuzzy matching ile akıllı görev tanıma
+- **Time-Based Duration Estimation**: Spesifik zaman tabanlı süre tahminleri (15dk, 30dk, 1saat, 1.5saat, 2saat)
+- **Duration Aggregation**: Proje ve özet bazlı toplam süre hesaplama ve gösterimi
+- **Color-Coded Task Management**: Süre bazlı görsel kodlama (yeşil/sarı/kırmızı)
 - **Real-time Updates**: Firebase ile canlı veri synchronizasyonu  
 - **Turkish Language Support**: Türkçe karakter desteği ve mixed-language processing
 - **Intelligent Task Search**: Typo tolerance ve confidence-based matching
@@ -61,7 +64,7 @@ interface Task {
   status: 'Yapılacak' | 'Yapılıyor' | 'Beklemede' | 'Blocked' | 'Yapıldı';
   type: 'Operasyon' | 'Yönlendirme' | 'Takip';
   priority: 'Yüksek' | 'Orta' | 'Düşük';
-  estimatedDuration: 'Kısa' | 'Orta' | 'Uzun';
+  estimatedDuration: '15dk' | '30dk' | '1saat' | '1.5saat' | '2saat';
   deadline: Timestamp;
   createdAt: Timestamp;
 }
@@ -169,6 +172,16 @@ src/
 5. **✅ User Confirmation System**: Disambiguation UI
 6. **✅ Enhanced Error Handling**: Comprehensive error recovery
 
+#### Faz 5: Time-Based Duration System (COMPLETED)
+1. **✅ Duration Type Refactor**: Replaced generic labels with specific times
+2. **✅ Time-Based Values**: 15dk, 30dk, 1saat, 1.5saat, 2saat
+3. **✅ Color-Coded UI**: Green (short), Yellow (medium), Red (long)
+4. **✅ Duration Utilities**: Conversion, sorting, and aggregation functions
+5. **✅ Total Time Display**: Project-level and summary-level aggregation
+6. **✅ Migration Support**: Backward compatibility with old values
+7. **✅ Firebase Rules Update**: Security validation for new duration format
+8. **✅ AI Integration**: Updated prompts for time-based estimation
+
 ### 🚀 Current State: Production Ready
 
 ## AI System Architecture
@@ -254,28 +267,32 @@ service cloud.firestore {
 
 ### ✅ Achieved Goals
 1. **Voice-Powered Task Management**: Full voice command support
-2. **Intelligent Task Matching**: 90%+ accuracy for common typos
-3. **Turkish Language Support**: Complete character normalization
-4. **Real-time Updates**: Instant UI synchronization
-5. **User-Friendly Confirmation**: Clear confidence indicators
-6. **Production Deployment**: Stable Vercel hosting
+2. **Time-Based Duration System**: Precise time estimation with visual indicators
+3. **Duration Aggregation**: Project-level and summary-level time tracking
+4. **Intelligent Task Matching**: 90%+ accuracy for common typos
+5. **Turkish Language Support**: Complete character normalization
+6. **Real-time Updates**: Instant UI synchronization
+7. **User-Friendly Confirmation**: Clear confidence indicators
+8. **Production Deployment**: Stable Vercel hosting
 
 ### 📊 Performance Metrics
 - **Task Match Accuracy**: >95% for speech-to-text variations
+- **Duration System Migration**: 100% backward compatibility maintained
+- **Time Calculation Performance**: O(n) aggregation for project summaries
 - **User Confirmation Rate**: <30% of searches need disambiguation
 - **Response Time**: <2 seconds for fuzzy matching
 - **Error Rate**: <5% unrecoverable errors
 
 ## Future Roadmap
 
-### Phase 5: Enterprise Features (Planned)
+### Phase 6: Enterprise Features (Planned)
 1. **Multi-Company Management**: Separate company workspaces
 2. **Advanced Reporting**: Task analytics and productivity metrics
 3. **Integration APIs**: ClickUp, Google Calendar, Gmail sync
 4. **Team Collaboration**: Multi-user support with permissions
 5. **Mobile App**: React Native implementation
 
-### Phase 6: AI Enhancement (Planned)
+### Phase 7: AI Enhancement (Planned)
 1. **Context Awareness**: Remember previous conversations
 2. **Smart Suggestions**: AI-powered task recommendations
 3. **Natural Language Queries**: Complex search queries

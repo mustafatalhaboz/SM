@@ -26,6 +26,9 @@ A sophisticated task management application with voice-to-text capabilities, AI-
 - **Multi-Stage Matching**: Exact → Case-insensitive → Partial → Fuzzy word similarity
 
 ### 📊 Professional Task Management
+- **Time-Based Duration System**: Precise duration estimates (15dk, 30dk, 1saat, 1.5saat, 2saat)
+- **Duration Aggregation**: Project-level and summary-level time tracking with visual indicators
+- **Color-Coded Duration**: Green (short), Yellow (medium), Red (long tasks) for instant recognition
 - **Date-Based Organization**: Overdue, Today, Tomorrow, Day After, Later accordions
 - **Project Drag & Drop**: HTML5 native reordering with visual feedback
 - **High-Priority Dashboard**: Automatic deadline and priority-based filtering
@@ -33,7 +36,8 @@ A sophisticated task management application with voice-to-text capabilities, AI-
 - **Responsive Design**: Mobile-optimized with smart column hiding
 
 ### 🔧 Enterprise Features  
-- **Task Duration Tracking**: Estimated vs actual time logging
+- **Advanced Duration System**: Time-based estimation with aggregation utilities
+- **Smart Time Display**: Automatic formatting (~3saat 30dk) and calculation
 - **Professional Table Layouts**: Grid-based consistent design
 - **Memory Management**: Proper cleanup, no memory leaks
 - **Security**: XSS protection, input validation, Firebase security rules
